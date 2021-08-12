@@ -7,8 +7,8 @@ log:
 deploy:
 	git push heroku
 lint:
-	composer run-script phpcs -- --standard=PSR12
+	composer phpcs
 lint-fix:
-	composer exec --verbose phpcbf -- --standard=PSR12
+	composer phpcbf
 install:
 	composer install
