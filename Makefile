@@ -10,3 +10,5 @@ lint:
 	composer run-script phpcs -- --standard=PSR12
 lint-fix:
 	composer exec --verbose phpcbf -- --standard=PSR12
+install:
+	composer install
