@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@200&display=swap');
+
+@import "variables";
+
+@import "~bootstrap/scss/bootstrap";
+
+html, body {
+    height: 100%;
+    font-size: 1rem;
+}
+
+.alert {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+}
+
+.content {
+    position: relative;
+}
