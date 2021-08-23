@@ -4,9 +4,9 @@ setup:
 	composer install
 	npm cache clean --force
 	npm install
-	cp -n .env.example .env
+	cp -n .env.example .env || true
 	php artisan key:gen --ansi
-	touch database/database.sqlite || tru
+	touch database/database.sqlite || true
 	php artisan migrate
 watch:
 	npm run watch
