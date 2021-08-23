@@ -41,6 +41,7 @@ class DomainControllerTest extends TestCase
     {
         $domain = ['name' => $domainName];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
+        dump($response);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseHas('urls', $domain);
