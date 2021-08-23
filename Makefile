@@ -24,3 +24,5 @@ lint-fix:
 	composer phpcbf
 install:
 	composer install
+test:
+	php artisan test

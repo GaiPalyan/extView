@@ -25,9 +25,14 @@ jobs:
       - name: Install
         # Install project
         run: make install
+      - name: set up project
+        run: make setup
       - name: Run linter
         # Run Linter
         run: make lint
+        # Run tests
+      - name: test
+        run: make test
         env:
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

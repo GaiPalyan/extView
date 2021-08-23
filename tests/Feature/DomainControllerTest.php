@@ -3,22 +3,19 @@
 namespace Tests\Feature;
 
 use Faker\Factory;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use Faker\Generator;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class DomainControllerTest extends TestCase
 {
-    use RefreshDatabase;
-
-    protected \Faker\Generator $faker;
+    protected Generator $faker;
 
     public function setUp(): void
     {
         parent::setUp();
         $this->faker = Factory::create();
         $this->seed();
-        dump($this);
     }
 
     public function testIndex()
@@ -29,33 +26,53 @@ class DomainControllerTest extends TestCase
 
     public function testShow()
     {
-        $id = $this->faker->numberBetween(1, 4);
-        $domain = DB::table('urls')->find(23);
+        $id = $this->faker->numberBetween(1, 3);
+        $domain = DB::table('urls')->find($id)->name;
         $response = $this->get(route('domains.show', $id));
+        $response->assertOk();
+        $response->assertSee($domain);
     }
 
     /**
      * @param $domainName
-     * @dataProvider domainNames
+     * @dataProvider domainNamesProvider
      */
     public function testStore($domainName)
     {
         $domain = ['name' => $domainName];
-        $response = $this->post(route('domains.store'), $domain);
+        $response = $this->post(route('domains.store'), ['url' => $domain]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseHas('urls', $domain);
     }
 
+    /**
+     * @param $incorrectDomainNames
+     * @dataProvider incorrectDomainNamesProvider
+     */
+    public function testStoreIncorrectDomainNames($incorrectDomainNames)
+    {
+        $domain = ['name' => $incorrectDomainNames];
+        $response = $this->post(route('domains.store'), ['url' => $domain]);
+        $response->assertRedirect();
+        $this->assertDatabaseMissing('urls', $domain);
+    }
 
-    public function domainNames()
+    public function domainNamesProvider(): array
     {
         return [
-            'name' => [
-                'https://www.yandex.ru',
-                'https://www.google.com',
-                'https://www.php.net'
-            ]
+                ['https://www.dd.ru'],
+                ['https://www.google.com'],
+                ['https://www.php.net']
+        ];
+    }
+
+    public function incorrectDomainNamesProvider(): array
+    {
+        return [
+            ['google.ru'],
+            ['htt://ya.ru'],
+            ['www.youtube.com']
         ];
     }
 }

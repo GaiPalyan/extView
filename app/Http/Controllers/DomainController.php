@@ -28,9 +28,9 @@ class DomainController extends Controller
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), ['url.name' => 'required|url|max:255|unique:urls,name']);
-        if ($validator->fails()) {
-            flash('Domain not valid!')->error()->important();
+        $validateDomain = Validator::make($request->all(), ['url.name' => 'required|url|max:255|unique:urls,name']);
+        if ($validateDomain->fails()) {
+            flash($validateDomain->errors()->first('url.name'))->info()->important();
             return redirect()->route('domains.create');
         }
 
@@ -45,9 +45,9 @@ class DomainController extends Controller
             'updated_at' => $currentTime
         ];
 
-        DB::table('urls')->insert($domain);
-        flash('Domain has been added!')->success()->important();
-        return redirect()->route('domains.create');
+         DB::table('urls')->insert($domain);
+         flash('Domain has been added!')->success()->important();
+         return redirect()->route('domains.create');
     }
 
     public function create()
