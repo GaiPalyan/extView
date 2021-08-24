@@ -10,8 +10,8 @@
                     <th>Последняя проверка</th>
                     <th>Код ответа</th>
                 </tr>
-            @foreach($domains as $domain)
                 <tr>
+                    @foreach($domains as $domain)
                     <td>
                         {{$domain->id}}
                     </td>
@@ -19,7 +19,8 @@
                         <a href="{{route('domain.show', $domain->id)}}">{{$domain->name}}</a>
                     </td>
                     <td>
-                        {{$domain->created_at}}
+                        {{data_get($lastChecks, $domain->id . '.last_check')}}
+                        {{data_get($lastChecks, $domain->id . '.status_code')}}
                     </td>
                 </tr>
             @endforeach

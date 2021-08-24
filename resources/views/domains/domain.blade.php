@@ -25,12 +25,12 @@
             </table>
         </div>
     </div>
-    {!! Form::open() !!}
+    {!! Form::open(['route' => ['domain.checks.store', $domain->id]]) !!}
     {!! Form::submit('Запустить проверку', $attributes = ['class' => 'btn btn-primary']) !!}
     {!! Form::close() !!}
     <div class="table-responsive">
         <table class="table table-bordered table-hover text-nowrap">
-            <tbody>
+
                 <tr>
                     <th>ID</th>
                     <th>Код ответа</th>
@@ -39,7 +39,16 @@
                     <th>description</th>
                     <th>Дата создания</th>
                 </tr>
-            </tbody>
+            @foreach($domainChecks as $domainCheckParams)
+                <tr>
+                    <td>{{$domainCheckParams->id}}</td>
+                    <td>{{$domainCheckParams->status_code}}</td>
+                    <td>{{$domainCheckParams->h1}}</td>
+                    <td>{{$domainCheckParams->keywords}}</td>
+                    <td>{{$domainCheckParams->description}}</td>
+                    <td>{{$domainCheckParams->created_at}}</td>
+                </tr>
+            @endforeach
         </table>
     </div>
 @endsection
