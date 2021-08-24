@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Faker\Factory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -17,13 +16,23 @@ class DomainController extends Controller
             ->distinct()
             ->get()
             ->sortBy('id');
-        return view('domains.show', ['domains' => $domains]);
+        $lastChecks = DB::table('url_checks')
+            ->select('url_id', 'status_code', DB::raw('max(updated_at) as last_check'))
+            ->groupBy('url_id', 'status_code')
+            ->get()
+            ->keyBy('url_id');
+        return view('domains.show', compact('domains', 'lastChecks'));
     }
 
     public function domainPage(int $id)
     {
         $domain = DB::table('urls')->find($id);
-        return view('domains.domain', compact('domain'));
+        if (!$domain) {
+            return abort(404);
+        }
+        $domainChecks = DB::table('url_checks')->where('url_id', '=', $id)
+        ->paginate(10);
+        return view('domains.domain', compact('domain', 'domainChecks'));
     }
 
     public function store(Request $request)
