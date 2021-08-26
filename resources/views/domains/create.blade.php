@@ -15,7 +15,7 @@
                                     'class' => 'form-control form-control-lg',
                                     'placeholder' => 'https://www.example.com'
                                     ]) !!}
-                    {!! Form::submit('Send', $attributes = [
+                    {!! Form::submit('Отправить', $attributes = [
                                     'class' => 'btn btn-lg btn-primary ml-3 px-5 text-uppercase'
                                     ]) !!}
                     {!! Form::close() !!}

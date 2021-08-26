@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <div class="container-lg">
+<div class="container-lg">
         <h1 class="mt-5 mb-3">Сайт: {{$domain->name}}</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-hover text-nowrap">
@@ -24,13 +24,14 @@
                 </tbody>
             </table>
         </div>
-    </div>
-    {!! Form::open(['route' => ['domain.checks.store', $domain->id]]) !!}
-    {!! Form::submit('Запустить проверку', $attributes = ['class' => 'btn btn-primary']) !!}
-    {!! Form::close() !!}
-    <div class="table-responsive">
-        <table class="table table-bordered table-hover text-nowrap">
 
+    <div class="table-responsive">
+        <h2 class="mt-5 mb-3">Проверки</h2>
+        {!! Form::open(['route' => ['domain.checks.store', $domain->id],
+                    'class' => 'mb-2']) !!}
+        {!! Form::submit('Запустить проверку', $attributes = ['class' => 'btn btn-primary']) !!}
+        {!! Form::close() !!}
+        <table class="table table-bordered table-hover text-nowrap">
                 <tr>
                     <th>ID</th>
                     <th>Код ответа</th>
@@ -51,4 +52,5 @@
             @endforeach
         </table>
     </div>
+</div>
 @endsection
