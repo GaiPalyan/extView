@@ -34,10 +34,10 @@ class DomainControllerTest extends TestCase
     }
 
     /**
-     * @param $domainName
+     * @param string $domainName
      * @dataProvider domainNamesProvider
      */
-    public function testStore($domainName)
+    public function testStore(string $domainName)
     {
         $domain = ['name' => $domainName];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
@@ -47,15 +47,32 @@ class DomainControllerTest extends TestCase
     }
 
     /**
-     * @param $incorrectDomainNames
+     * @param string $incorrectDomainNames
      * @dataProvider incorrectDomainNamesProvider
      */
-    public function testStoreIncorrectDomainNames($incorrectDomainNames)
+    public function testStoreIncorrectDomainNames(string $incorrectDomainNames)
     {
         $domain = ['name' => $incorrectDomainNames];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
         $response->assertRedirect();
         $this->assertDatabaseMissing('urls', $domain);
+    }
+
+    public function testStoreDomainCheck()
+    {
+        $id = $this->faker->numberBetween(1, 3);
+        $domain = DB::table('urls')->find($id);
+        $statusCode = 200;
+        $response = $this->post(route('domain.checks.store', $domain->id));
+        $data = [
+            'url_id' => $domain->id,
+            'status_code' => null,
+            "h1" => null,
+            "keywords" => null,
+            "description" => null,
+        ];
+        $response->assertRedirect();
+        $this->assertDatabaseHas('url_checks', $data);
     }
 
     public function domainNamesProvider(): array
