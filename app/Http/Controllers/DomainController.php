@@ -24,38 +24,40 @@ class DomainController extends Controller
 
     public function domainPage(int $id)
     {
-        return $this->manager->getDomainPage($id);
+        return $this->manager->getDomainPersonalPage($id);
     }
 
     public function store(Request $request)
     {
         $validateDomain = Validator::make(
-            $request->all(),
-            ['url.name' => 'required|url|max:255|unique:urls,name'],
-            [
+            $request->only('url'),
+            ['url.name' => 'required|url|max:255'],
+            $messages = [
                 'required' => 'Поле ввода не может быть пустым',
                 'url' => 'Некорректный адрес',
                 'max' => 'Максимальная допустимая длина адреса 255 символов',
-                'unique' => 'Такой адрес уже есть в базе'
             ]
         );
-
         if ($validateDomain->fails()) {
             flash($validateDomain->errors()->first('url.name'))->error()->important();
             return redirect()->route('domains.create');
         }
+        $requestData = $request->toArray();
+        $name = $requestData['url']['name'];
+        $existDomain = $this->manager->getDomainInfo($name);
 
-        $data = $request->toArray();
-        $this->manager->prepareBasicDomainData($data);
+        if ($existDomain) {
+            flash('Адрес уже существует')->info()->important();
+            return  redirect()->route('domain.show', $existDomain);
+        }
+
+        $this->manager->prepareBasicDomainData($name);
 
         flash('Адрес добавлен в базу!')->success()->important();
 
         return redirect()->route('domains.create');
     }
 
-    /**
-     * @throws \DiDom\Exceptions\InvalidSelectorException
-     */
     public function storeCheck(int $id)
     {
         $this->manager->prepareDomainCheckData($id);

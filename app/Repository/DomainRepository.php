@@ -35,20 +35,51 @@ class DomainRepository
         return view('domains.domain', compact('domain', 'domainChecks'));
     }
 
-    public function getDomain(int $id)
+    /**
+     * @param int|null $id
+     * @param string|null $name
+     * @return \Illuminate\Database\Query\Builder|mixed|null
+     */
+    public function getDomain(int $id = null, string $name = null)
     {
-        return DB::table('urls')->find($id);
+        $domain = isset($id)
+            ? DB::table('urls')->find($id)
+            : DB::table('urls')->where('name', $name)->value('id');
+        return $domain;
     }
 
+    /**
+     * @param array $domain
+     * @return string|void
+     */
     public function saveDomain(array $domain)
     {
-        DB::table('urls')->insert($domain);
+        try {
+            DB::table('urls')->insert($domain);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
+    /**
+     * @param int $id
+     * @param string $column
+     * @param $value
+     * @return string|void
+     */
     public function updateDomainParam(int $id, string $column, $value)
     {
-        DB::table('urls')->where('id', $id)->update([$column => $value]);
+        try {
+            DB::table('urls')->where('id', $id)->update([$column => $value]);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
+
+    /**
+     * @param array $data
+     * @return string|void
+     */
     public function saveDomainCheck(array $data)
     {
         try {

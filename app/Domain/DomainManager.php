@@ -25,18 +25,23 @@ class DomainManager
         return $this->repository->getList();
     }
 
-    public function getDomainPage(int $id)
+    public function getDomainPersonalPage(int $id)
     {
         return $this->repository->getPage($id);
     }
 
-    public function prepareBasicDomainData(array $data): void
+    public function getDomainInfo(string $name)
     {
-        $urlName = $data['url']['name'];
-        $normalizeUrl = self::normalize($urlName);
+        $normalizeUrl = self::normalize($name);
+        return $this->repository->getDomain(null, $normalizeUrl);
+    }
+
+    public function prepareBasicDomainData(string $domainName): void
+    {
+        $normalizeName = self::normalize($domainName);
 
         $domain = [
-            'name' => $normalizeUrl,
+            'name' => $normalizeName,
             'created_at' => $this->time,
             'updated_at' => $this->time
         ];
