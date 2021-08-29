@@ -45,7 +45,7 @@ class DomainRepository
         DB::table('urls')->insert($domain);
     }
 
-    public function updateDomainParam(int $id, string $column, string|int $value)
+    public function updateDomainParam(int $id, string $column, $value)
     {
         DB::table('urls')->where('id', $id)->update([$column => $value]);
     }
