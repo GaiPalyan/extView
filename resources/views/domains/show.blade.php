@@ -21,6 +21,8 @@
                         </td>
                         <td>
                             {{data_get($lastChecks, $domain->id . '.last_check')}}
+                        </td>
+                        <td>
                             {{data_get($lastChecks, $domain->id . '.status_code')}}
                         </td>
                     </tr>

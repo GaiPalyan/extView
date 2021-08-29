@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class DomainControllerTest extends TestCase
@@ -60,19 +61,24 @@ class DomainControllerTest extends TestCase
 
     public function testStoreDomainCheck()
     {
-        $id = $this->faker->numberBetween(1, 3);
-        $domain = DB::table('urls')->find($id);
         $statusCode = 200;
-        $response = $this->post(route('domain.checks.store', $domain->id));
+        $domain = DB::table('urls')->first('*');
+        $body = '<h1>Header</h1> \n
+                 <meta name="keywords" content="awesome content"> \n
+                 <meta name="description" content="most popular app">';
+        Http::fake([$domain->name => Http::response($body, $statusCode)]);
+        $response = $this->post(route('domain.checks.store', (int) $domain->id));
+
         $data = [
             'url_id' => $domain->id,
-            'status_code' => null,
-            "h1" => null,
-            "keywords" => null,
-            "description" => null,
+            'status_code' => $statusCode,
+            "h1" => 'Header',
+            "keywords" => 'awesome content',
+            "description" => 'most popular app',
         ];
-        $response->assertRedirect();
         $this->assertDatabaseHas('url_checks', $data);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
     }
 
     public function domainNamesProvider(): array

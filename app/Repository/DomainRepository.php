@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
 use Illuminate\Support\Facades\DB;
@@ -22,7 +24,7 @@ class DomainRepository
 
     public function getPage(int $id)
     {
-        $domain = DB::table('urls')->find($id);
+        $domain = $this->getDomain($id);
         if (!$domain) {
             return abort(404);
         }
@@ -35,7 +37,7 @@ class DomainRepository
 
     public function getDomain(int $id)
     {
-        DB::table('urls')->find($id);
+        return DB::table('urls')->find($id);
     }
 
     public function saveDomain(array $domain)
@@ -43,6 +45,10 @@ class DomainRepository
         DB::table('urls')->insert($domain);
     }
 
+    public function updateDomainParam(int $id, string $column, string|int $value)
+    {
+        DB::table('urls')->where('id', $id)->update([$column => $value]);
+    }
     public function saveDomainCheck(array $data)
     {
         try {

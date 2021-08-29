@@ -9,12 +9,15 @@
         "ext-pdo": "*",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
+        "imangazaliev/didom": "^1.18",
         "laracasts/flash": "^3.2",
         "laravel/framework": "^8.54",
         "laravel/tinker": "^2.5",
         "laravelcollective/html": "^6.2"
     },
     "require-dev": {
+        "roave/security-advisories": "dev-latest"
+        ,
         "facade/ignition": "^2.5",
         "fzaninotto/faker": "^1.9.1",
         "laravel/sail": "^1.0.1",

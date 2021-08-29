@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain;
 
 use App\Repository\DomainRepository;
 use Carbon\Carbon;
+use DiDom\Document;
+use Illuminate\Support\Facades\Http;
 
 class DomainManager
 {
@@ -26,7 +30,7 @@ class DomainManager
         return $this->repository->getPage($id);
     }
 
-    public function prepareBasicDomainData(array $data)
+    public function prepareBasicDomainData(array $data): void
     {
         $urlName = $data['url']['name'];
         $normalizeUrl = self::normalize($urlName);
@@ -40,17 +44,39 @@ class DomainManager
         $this->repository->saveDomain($domain);
     }
 
-    public function prepareDomainCkeckData(int $id)
+    /**
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse|void
+     * @throws \DiDom\Exceptions\InvalidSelectorException
+     */
+    public function prepareDomainCheckData(int $id)
     {
-        $this->repository->getDomain($id);
+        $domain = $this->repository->getDomain($id);
+        try {
+            $response = Http::get($domain->name);
+        } catch (\Exception $e) {
+            flash('Адрес не существует')->error()->important();
+            return redirect()->route('domain.show', $id);
+        }
 
+        $elements = new Document($response->body());
+        $h1 = $elements->has('h1') ? $elements->first('h1')->text() : null;
+        $keywords = $elements->has('meta[name="keywords"]')
+            ? $elements->first('meta[name="keywords"]')->getAttribute('content') : null;
+        $description = $elements->has('meta[name="description"]')
+            ? $elements->first('meta[name="description"]')->getAttribute('content') : null;
         $domainCheck = [
             'url_id' => $id,
             'created_at' => $this->time,
-            'updated_at' => $this->time
+            'updated_at' => $this->time,
+            'status_code' => $response->status(),
+            'h1' => $h1,
+            'keywords' => $keywords,
+            'description' => $description
         ];
 
         $this->repository->saveDomainCheck($domainCheck);
+        $this->repository->updateDomainParam($id, 'updated_at', $this->time->toDateTimeString());
     }
 
     private static function normalize(string $urlName): string

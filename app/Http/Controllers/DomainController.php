@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\DomainManager;
@@ -51,9 +53,12 @@ class DomainController extends Controller
         return redirect()->route('domains.create');
     }
 
+    /**
+     * @throws \DiDom\Exceptions\InvalidSelectorException
+     */
     public function storeCheck(int $id)
     {
-        $this->manager->prepareDomainCkeckData($id);
+        $this->manager->prepareDomainCheckData($id);
         flash('Проверка прошла успешно')->success()->important();
         return redirect()->route('domain.show', $id);
     }
