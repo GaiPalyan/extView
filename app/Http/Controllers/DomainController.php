@@ -30,18 +30,20 @@ class DomainController extends Controller
     public function store(Request $request)
     {
         $validateDomain = Validator::make(
-            $request->only('url'),
-            ['url.name' => 'required|url|max:255'],
+            $request->input('url'),
+            ['name' => 'required|url|max:255'],
             $messages = [
                 'required' => 'Поле ввода не может быть пустым',
                 'url' => 'Некорректный адрес',
                 'max' => 'Максимальная допустимая длина адреса 255 символов',
             ]
         );
+
         if ($validateDomain->fails()) {
-            flash($validateDomain->errors()->first('url.name'))->error()->important();
+            flash($validateDomain->errors()->first('name'))->error()->important();
             return redirect()->route('domains.create');
         }
+
         $requestData = $request->toArray();
         $name = $requestData['url']['name'];
         $existDomain = $this->manager->getDomainInfo($name);
