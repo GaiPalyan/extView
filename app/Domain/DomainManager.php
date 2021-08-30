@@ -42,8 +42,8 @@ class DomainManager
 
         $domain = [
             'name' => $normalizeName,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
+            'created_at' => $this->time,
+            'updated_at' => $this->time
         ];
 
         $this->repository->saveDomain($domain);
@@ -65,15 +65,19 @@ class DomainManager
         }
 
         $elements = new Document($response->body());
-        $h1 = $elements->has('h1') ? $elements->first('h1')->text() : null;
+        $h1 = $elements->has('h1')
+            ? $elements->first('h1')->text()
+            : null;
         $keywords = $elements->has('meta[name="keywords"]')
-            ? $elements->first('meta[name="keywords"]')->getAttribute('content') : null;
+            ? $elements->first('meta[name="keywords"]')->getAttribute('content')
+            : null;
         $description = $elements->has('meta[name="description"]')
-            ? $elements->first('meta[name="description"]')->getAttribute('content') : null;
+            ? $elements->first('meta[name="description"]')->getAttribute('content')
+            : null;
         $domainCheck = [
             'url_id' => $id,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => $this->time,
+            'updated_at' => $this->time,
             'status_code' => $response->status(),
             'h1' => $h1,
             'keywords' => $keywords,

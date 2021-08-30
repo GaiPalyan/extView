@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Carbon\Carbon;
 use Faker\Factory;
 use Faker\Generator;
 use Illuminate\Support\Facades\DB;
@@ -40,7 +41,11 @@ class DomainControllerTest extends TestCase
      */
     public function testStore(string $domainName)
     {
-        $domain = ['name' => $domainName];
+        $domain = [
+            'name' => $domainName,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();

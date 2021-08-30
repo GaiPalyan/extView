@@ -12,22 +12,39 @@ class DomainController extends Controller
 {
     private DomainManager $manager;
 
+    /**
+     * @param DomainManager $manager
+     */
     public function __construct(DomainManager $manager)
     {
         $this->manager = $manager;
     }
 
+    /**
+     * Show main domains list
+     */
     public function show()
     {
         return $this->manager->getDomainsList();
     }
 
+    /**
+     * Show domain personal page
+     *
+     * @param int $id
+     */
     public function domainPage(int $id)
     {
         return $this->manager->getDomainPersonalPage($id);
     }
 
-    public function store(Request $request)
+    /**
+     * Validate and store domain
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
         $validateDomain = Validator::make(
             $request->input('url'),
@@ -60,7 +77,14 @@ class DomainController extends Controller
         return redirect()->route('domains.create');
     }
 
-    public function storeCheck(int $id)
+    /**
+     * Store domain parsing result
+     *
+     * @param int $id
+     * @return \Illuminate\Http\RedirectResponse
+     * @throws \DiDom\Exceptions\InvalidSelectorException
+     */
+    public function storeCheck(int $id): \Illuminate\Http\RedirectResponse
     {
         $this->manager->prepareDomainCheckData($id);
         flash('Проверка прошла успешно')->success()->important();

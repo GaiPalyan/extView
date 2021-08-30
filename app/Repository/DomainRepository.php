@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class DomainRepository
 {
+
     public function getList()
     {
         $domains = DB::table('urls')
