@@ -42,8 +42,8 @@ class DomainManager
 
         $domain = [
             'name' => $normalizeName,
-            'created_at' => $this->time,
-            'updated_at' => $this->time
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
         ];
 
         $this->repository->saveDomain($domain);
@@ -72,8 +72,8 @@ class DomainManager
             ? $elements->first('meta[name="description"]')->getAttribute('content') : null;
         $domainCheck = [
             'url_id' => $id,
-            'created_at' => $this->time,
-            'updated_at' => $this->time,
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now(),
             'status_code' => $response->status(),
             'h1' => $h1,
             'keywords' => $keywords,
