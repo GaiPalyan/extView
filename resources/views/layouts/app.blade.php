@@ -23,7 +23,7 @@
                             <a class="nav-link active" href="{{route('domains.create')}}">Главная</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route('domains.show')}}">Сайты</a>
+                            <a class="nav-link" href="{{route('domains_list.show')}}">Сайты</a>
                         </li>
                     </ul>
                 </div>

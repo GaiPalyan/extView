@@ -27,7 +27,7 @@
 
     <div class="table-responsive">
         <h2 class="mt-5 mb-3">Проверки</h2>
-        {!! Form::open(['route' => ['domain.checks.store', $domain->id],
+        {!! Form::open(['route' => ['domain_checks.store', $domain->id],
                     'class' => 'mb-2']) !!}
         {!! Form::submit('Запустить проверку', $attributes = ['class' => 'btn btn-primary']) !!}
         {!! Form::close() !!}

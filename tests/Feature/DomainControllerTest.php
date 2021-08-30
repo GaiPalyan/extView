@@ -30,7 +30,7 @@ class DomainControllerTest extends TestCase
     {
         $id = $this->faker->numberBetween(1, 3);
         $domain = DB::table('urls')->find($id)->name;
-        $response = $this->get(route('domains.show', $id));
+        $response = $this->get(route('domains_list.show', $id));
         $response->assertOk();
         $response->assertSee($domain);
     }
@@ -72,7 +72,7 @@ class DomainControllerTest extends TestCase
                  <meta name="keywords" content="awesome content"> \n
                  <meta name="description" content="most popular app">';
         Http::fake([$domain->name => Http::response($body, $statusCode)]);
-        $response = $this->post(route('domain.checks.store', (int) $domain->id));
+        $response = $this->post(route('domain_checks.store', (int) $domain->id));
 
         $data = [
             'url_id' => $domain->id,

@@ -21,7 +21,7 @@ class DomainController extends Controller
     }
 
     /**
-     * Show main domains list
+     * Show domains main list
      */
     public function show()
     {
@@ -67,14 +67,14 @@ class DomainController extends Controller
 
         if ($existDomain) {
             flash('Адрес уже существует')->info()->important();
-            return  redirect()->route('domain.show', $existDomain);
+            return  redirect()->route('domain_personal_page.show', $existDomain);
         }
 
         $this->manager->prepareBasicDomainData($name);
-
         flash('Адрес добавлен в базу!')->success()->important();
 
-        return redirect()->route('domains.create');
+        $assignedId = $this->manager->getDomainInfo($name);
+        return redirect()->route('domain_personal_page.show', $assignedId);
     }
 
     /**
@@ -88,7 +88,7 @@ class DomainController extends Controller
     {
         $this->manager->prepareDomainCheckData($id);
         flash('Проверка прошла успешно')->success()->important();
-        return redirect()->route('domain.show', $id);
+        return redirect()->route('domain_personal_page.show', $id);
     }
 
     public function create()
