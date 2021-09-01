@@ -16,7 +16,7 @@ class UrlChecks extends Migration
         Schema::create('url_checks', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('url_id');
-            $table->foreign('url_id')->references('id')->on('urls')->cascadeOnDelete();
+           // $table->foreign('url_id')->references('id')->on('urls')->cascadeOnDelete();
             $table->integer('status_code')->nullable();
             $table->string('h1', 255)->nullable();
             $table->text('keywords')->nullable();
