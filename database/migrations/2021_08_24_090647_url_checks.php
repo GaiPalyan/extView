@@ -21,8 +21,8 @@ class UrlChecks extends Migration
             $table->string('h1', 255)->nullable();
             $table->text('keywords')->nullable();
             $table->text('description')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
+            $table->timestamp('created_at')->nullable();
+            $table->timestamp('updated_at')->nullable();
         });
     }
 
