@@ -61,7 +61,7 @@ class DomainManager
             $response = Http::get($domain->name);
         } catch (\Exception $e) {
             flash('Адрес не существует')->error()->important();
-            return redirect()->route('domain.show', $id);
+            return redirect()->route('domain_personal_page.show', $id);
         }
 
         $elements = new Document($response->body());
