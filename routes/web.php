@@ -16,6 +16,6 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DomainController::class, 'create'])->name('domains.create');
 Route::get('/urls', [DomainController::class, 'show'])->name('domains_list.show');
-Route::match(['post', 'get'], '/', [DomainController::class, 'store'])->name('domains.store');
+Route::any( '/', [DomainController::class, 'store'])->name('domains.store');
 Route::get('/urls/{id}', [DomainController::class, 'domainPage'])->name('domain_personal_page.show');
 Route::post('/urls/{id}/checks', [DomainController::class, 'storeCheck'])->name('domain_checks.store');
