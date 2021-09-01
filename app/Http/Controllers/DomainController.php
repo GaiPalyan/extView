@@ -46,6 +46,7 @@ class DomainController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
+       // dd($request->input('url'));
         $validateDomain = Validator::make(
             $request->input('url'),
             ['name' => 'required|url|max:255'],
