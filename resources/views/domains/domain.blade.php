@@ -44,10 +44,10 @@
                 <tr>
                     <td>{{$domainCheckParams->id}}</td>
                     <td>{{$domainCheckParams->status_code}}</td>
-                    <td>{{$domainCheckParams->h1}}</td>
-                    <td>{{$domainCheckParams->keywords}}</td>
-                    <td>{{$domainCheckParams->description}}</td>
-                    <td>{{$domainCheckParams->created_at}}</td>
+                    <td>{{Str::of($domainCheckParams->h1)->limit(20)}}</td>
+                    <td>{{Str::of($domainCheckParams->keywords)->limit(20)}}</td>
+                    <td>{{Str::of($domainCheckParams->description)->limit(20)}}</td>
+                    <td>{{Str::of($domainCheckParams->created_at)->limit(20)}}</td>
                 </tr>
             @endforeach
         </table>

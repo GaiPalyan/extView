@@ -30,5 +30,6 @@
                 </tbody>
             </table>
         </div>
+    {{$domains->links()}}
 </div>
 @endsection

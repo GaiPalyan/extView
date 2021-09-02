@@ -12,9 +12,9 @@ class DomainRepository
     public function getList()
     {
         $domains = DB::table('urls')
-            ->distinct()
-            ->get()
-            ->sortBy('id');
+            ->select('id', 'name')
+            ->orderByDesc('created_at')
+            ->simplePaginate(10);
         $lastChecks = DB::table('url_checks')
             ->select('url_id', 'status_code', DB::raw('max(updated_at) as last_check'))
             ->groupBy('url_id', 'status_code')

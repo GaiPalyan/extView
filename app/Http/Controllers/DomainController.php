@@ -46,7 +46,6 @@ class DomainController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\RedirectResponse
     {
-       // dd($request->input('url'));
         $validateDomain = Validator::make(
             $request->input('url'),
             ['name' => 'required|url|max:255'],
@@ -75,7 +74,7 @@ class DomainController extends Controller
         flash('Адрес добавлен в базу!')->success()->important();
 
         $assignedId = $this->manager->getDomainInfo($name);
-        return redirect()->route('domain_personal_page.show', $assignedId);
+        return redirect()->route('domain_personal_page.show', ['id' => $assignedId]);
     }
 
     /**

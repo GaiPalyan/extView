@@ -33,12 +33,12 @@
             @include('flash::message')
             @yield('content')
         </main>
+        <footer class="border-top py-3 mt-5 flex-shrink-0">
+            <div class="container-lg">
+                <div class="text-center">
+                    <a href="https://github.com/GaiPalyan" target="_blank">My gitHub</a>
+                </div>
+            </div>
+        </footer>
     </body>
-<footer class="border-top py-3 mt-5 flex-shrink-0">
-    <div class="container-lg">
-        <div class="text-center">
-            <a href="https://github.com/GaiPalyan" target="_blank">My gitHub</a>
-        </div>
-    </div>
-</footer>
 </html>
