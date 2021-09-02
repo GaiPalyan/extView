@@ -67,6 +67,7 @@ class DomainController extends Controller
 
         if ($existDomain) {
             flash('Адрес уже существует')->info()->important();
+            dd(redirect()->route('domain_personal_page.show', $existDomain));
             return  redirect()->route('domain_personal_page.show', $existDomain);
         }
 
@@ -74,7 +75,7 @@ class DomainController extends Controller
         flash('Адрес добавлен в базу!')->success()->important();
 
         $assignedId = $this->manager->getDomainInfo($name);
-        return redirect()->route('domain_personal_page.show', ['id' => $assignedId]);
+        return redirect()->route('domain_personal_page.show', $assignedId);
     }
 
     /**
