@@ -14,7 +14,7 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+ /*   public function run()
     {
         $faker = Factory::create();
         DB::table('urls')->insert([
@@ -34,5 +34,5 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => Carbon::now()
             ],
         ]);
-    }
+    }*/
 }
