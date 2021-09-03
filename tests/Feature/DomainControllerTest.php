@@ -3,21 +3,28 @@
 namespace Tests\Feature;
 
 use Carbon\Carbon;
-use Faker\Factory;
-use Faker\Generator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class DomainControllerTest extends TestCase
 {
-    protected Generator $faker;
+    protected int $id;
+    protected string $time;
+    protected array $data;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->faker = Factory::create();
-        $this->seed();
+        $this->time = Carbon::now()->toDateTimeString();
+
+        $this->data = [
+            'name' => 'www.w.com.',
+            'created_at' => $this->time,
+            'updated_at' => $this->time
+        ];
+
+        $this->id = DB::table('urls')->insertGetId($this->data);
     }
 
     public function testIndex()
@@ -28,11 +35,8 @@ class DomainControllerTest extends TestCase
 
     public function testShow()
     {
-        $id = $this->faker->numberBetween(1, 3);
-        $domain = DB::table('urls')->find($id)->name;
-        $response = $this->get(route('domains_list.show', $id));
+        $response = $this->get(route('domains_list.show', $this->id));
         $response->assertOk();
-        $response->assertSee($domain);
     }
 
     /**
@@ -41,16 +45,21 @@ class DomainControllerTest extends TestCase
      */
     public function testStore(string $domainName)
     {
-        $domain = [
-            'name' => $domainName,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now()
-        ];
+        $domain = ['name' => $domainName];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseHas('urls', $domain);
     }
+
+    /*public function testStoreExistingDomain()
+    {
+        $domain = ['name' => $this->data['name']];
+        $response = $this->post(route('domains.store'), ['url' => $domain]);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('domain_personal_page.show', ['id' => $this->id]));
+        $this->assertDatabaseHas('urls', $this->data);
+    }*/
 
     /**
      * @param string $incorrectDomainNames
