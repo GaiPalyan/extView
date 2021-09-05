@@ -39,6 +39,9 @@ class DomainManager
         return $this->repository->getDomain(null, $normalizeUrl);
     }
 
+    /**
+     * @param string $domainName
+     */
     public function prepareBasicDomainData(string $domainName): void
     {
         $normalizeName = self::normalize($domainName);
@@ -60,6 +63,7 @@ class DomainManager
     public function prepareDomainCheckData(int $id)
     {
         $domain = $this->repository->getDomain($id);
+
         try {
             $response = Http::get($domain->name);
         } catch (\Exception $e) {
@@ -84,6 +88,7 @@ class DomainManager
 
         $this->repository->saveDomainCheck($domainCheck);
         $this->repository->updateDomainParam($id, 'updated_at', $this->time->toDateTimeString());
+        flash('Проверка прошла успешно')->success()->important();
     }
 
     private static function normalize(string $urlName): string

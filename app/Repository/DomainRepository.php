@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -30,7 +31,10 @@ class DomainRepository
             return abort(404);
         }
 
-        $domainChecks = DB::table('url_checks')->where('url_id', '=', $id)->paginate(10);
+        $domainChecks = DB::table('url_checks')
+            ->where('url_id', '=', $id)
+            ->orderByDesc('updated_at')
+            ->paginate(10);
 
         return view('domains.domain', compact('domain', 'domainChecks'));
     }
@@ -38,7 +42,7 @@ class DomainRepository
     /**
      * @param int|null $id
      * @param string|null $name
-     * @return \Illuminate\Database\Query\Builder|mixed|null
+     * @return Builder|null
      */
     public function getDomain(int $id = null, string $name = null)
     {

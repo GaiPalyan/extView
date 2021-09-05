@@ -32,7 +32,9 @@ class DomainController extends Controller
     {
         $validateDomain = Validator::make(
             $request->input('url'),
-            ['name' => 'required|url|max:255'],
+            [
+                'name' => ['required', 'url' . 'max:255']
+            ],
             $messages = [
                 'required' => 'Поле ввода не может быть пустым',
                 'url' => 'Некорректный адрес',
@@ -90,7 +92,6 @@ class DomainController extends Controller
     public function storeCheck(int $id): RedirectResponse
     {
         $this->manager->prepareDomainCheckData($id);
-        flash('Проверка прошла успешно')->success()->important();
         return back();
     }
 
