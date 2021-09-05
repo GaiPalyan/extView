@@ -33,7 +33,7 @@ class DomainController extends Controller
         $validateDomain = Validator::make(
             $request->input('url'),
             [
-                'name' => ['required', 'url' . 'max:255']
+                'name' => ['required', 'url', 'max:255']
             ],
             $messages = [
                 'required' => 'Поле ввода не может быть пустым',
@@ -41,7 +41,7 @@ class DomainController extends Controller
                 'max' => 'Максимальная допустимая длина адреса 255 символов',
             ]
         );
-
+        //dd($validateDomain);
         if ($validateDomain->fails()) {
             flash($validateDomain->errors()->first('name'))->error()->important();
             return redirect()->route('domains.create');
