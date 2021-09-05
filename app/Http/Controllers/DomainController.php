@@ -41,7 +41,7 @@ class DomainController extends Controller
                 'max' => 'Максимальная допустимая длина адреса 255 символов',
             ]
         );
-        //dd($validateDomain);
+
         if ($validateDomain->fails()) {
             flash($validateDomain->errors()->first('name'))->error()->important();
             return redirect()->route('domains.create');

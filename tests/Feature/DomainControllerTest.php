@@ -46,7 +46,7 @@ class DomainControllerTest extends TestCase
     public function testStore(string $domainName): void
     {
         $domain = ['name' => $domainName];
-        $response = $this->post(route('domains.store'), ['url' => $domain]);
+        $response = $this->post(route('urls.store'), ['url' => $domain]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseHas('urls', $domain);
@@ -55,7 +55,7 @@ class DomainControllerTest extends TestCase
     public function testStoreExistingDomain(): void
     {
         $domain = ['name' => $this->data['name']];
-        $response = $this->post(route('domains.store'), ['url' => $domain]);
+        $response = $this->post(route('urls.store'), ['url' => $domain]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect(route('domain_personal_page.show', ['id' => $this->id]));
         $this->assertDatabaseHas('urls', $this->data);
@@ -68,7 +68,7 @@ class DomainControllerTest extends TestCase
     public function testStoreIncorrectDomainNames(string $incorrectDomainNames): void
     {
         $domain = ['name' => $incorrectDomainNames];
-        $response = $this->post(route('domains.store'), ['url' => $domain]);
+        $response = $this->post(route('urls.store'), ['url' => $domain]);
         $response->assertRedirect();
         $this->assertDatabaseMissing('urls', $domain);
     }

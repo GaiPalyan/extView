@@ -8,7 +8,7 @@
                     <h1 class="display-3">Анализатор страниц</h1>
                     <p class="lead">Бесплатно проверяйте сайты на SEO пригодность</p>
                     {!! Form::open([
-                        'route' => 'domains.store',
+                        'route' => 'urls.store',
                         'class' => 'd-flex justify-content-center'
                     ]) !!}
                     {!! Form::text('url[name]', $value = null, $attributes = [
