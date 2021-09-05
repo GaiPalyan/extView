@@ -44,7 +44,8 @@ class DomainController extends Controller
 
         if ($validateDomain->fails()) {
             flash($validateDomain->errors()->first('name'))->error()->important();
-            return redirect()->route('domains.create');
+
+            return back()->withInput()->withErrors($validateDomain);
         }
 
         $requestData = $request->toArray();
