@@ -7,7 +7,10 @@ namespace App\Domain;
 use App\Repository\DomainRepository;
 use Carbon\Carbon;
 use DiDom\Document;
+use DiDom\Exceptions\InvalidSelectorException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
 
 class DomainManager
 {
@@ -20,7 +23,7 @@ class DomainManager
         $this->time = Carbon::now();
     }
 
-    public function getDomainsList()
+    public function getDomainsList(): View
     {
         return $this->repository->getList();
     }
@@ -51,8 +54,8 @@ class DomainManager
 
     /**
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse|void
-     * @throws \DiDom\Exceptions\InvalidSelectorException
+     * @return RedirectResponse|void
+     * @throws InvalidSelectorException
      */
     public function prepareDomainCheckData(int $id)
     {
@@ -65,15 +68,10 @@ class DomainManager
         }
 
         $elements = new Document($response->body());
-        $h1 = $elements->has('h1')
-            ? $elements->first('h1')->text()
-            : null;
-        $keywords = $elements->has('meta[name="keywords"]')
-            ? $elements->first('meta[name="keywords"]')->getAttribute('content')
-            : null;
-        $description = $elements->has('meta[name="description"]')
-            ? $elements->first('meta[name="description"]')->getAttribute('content')
-            : null;
+        $h1 = optional($elements->first('h1'))->text();
+        $keywords = optional($elements->first('meta[name=keywords]'))->getAttribute('content');
+        $description = optional($elements->first('meta[name=description]'))->getAttribute('content');
+
         $domainCheck = [
             'url_id' => $id,
             'created_at' => $this->time,

@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
 
 class DomainRepository
 {
-
-    public function getList()
+    public function getList(): View
     {
         $domains = DB::table('urls')
             ->select('id', 'name')
@@ -30,8 +30,7 @@ class DomainRepository
             return abort(404);
         }
 
-        $domainChecks = DB::table('url_checks')->where('url_id', '=', $id)
-            ->paginate(10);
+        $domainChecks = DB::table('url_checks')->where('url_id', '=', $id)->paginate(10);
 
         return view('domains.domain', compact('domain', 'domainChecks'));
     }
@@ -43,10 +42,9 @@ class DomainRepository
      */
     public function getDomain(int $id = null, string $name = null)
     {
-        $domain = isset($id)
+        return isset($id)
             ? DB::table('urls')->find($id)
             : DB::table('urls')->where('name', $name)->value('id');
-        return $domain;
     }
 
     /**

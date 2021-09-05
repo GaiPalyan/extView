@@ -19,7 +19,7 @@ class DomainControllerTest extends TestCase
         $this->time = Carbon::now()->toDateTimeString();
 
         $this->data = [
-            'name' => 'www.w.com.',
+            'name' => 'https://www.w.com.',
             'created_at' => $this->time,
             'updated_at' => $this->time
         ];
@@ -27,13 +27,13 @@ class DomainControllerTest extends TestCase
         $this->id = DB::table('urls')->insertGetId($this->data);
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
         $response = $this->get(route('domains.create'));
         $response->assertOk();
     }
 
-    public function testShow()
+    public function testShow(): void
     {
         $response = $this->get(route('domains_list.show', $this->id));
         $response->assertOk();
@@ -43,7 +43,7 @@ class DomainControllerTest extends TestCase
      * @param string $domainName
      * @dataProvider domainNamesProvider
      */
-    public function testStore(string $domainName)
+    public function testStore(string $domainName): void
     {
         $domain = ['name' => $domainName];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
@@ -52,20 +52,20 @@ class DomainControllerTest extends TestCase
         $this->assertDatabaseHas('urls', $domain);
     }
 
-    /*public function testStoreExistingDomain()
+    public function testStoreExistingDomain(): void
     {
         $domain = ['name' => $this->data['name']];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect(route('domain_personal_page.show', ['id' => $this->id]));
         $this->assertDatabaseHas('urls', $this->data);
-    }*/
+    }
 
     /**
      * @param string $incorrectDomainNames
      * @dataProvider incorrectDomainNamesProvider
      */
-    public function testStoreIncorrectDomainNames(string $incorrectDomainNames)
+    public function testStoreIncorrectDomainNames(string $incorrectDomainNames): void
     {
         $domain = ['name' => $incorrectDomainNames];
         $response = $this->post(route('domains.store'), ['url' => $domain]);
@@ -73,7 +73,7 @@ class DomainControllerTest extends TestCase
         $this->assertDatabaseMissing('urls', $domain);
     }
 
-    public function testStoreDomainCheck()
+    public function testStoreDomainCheck(): void
     {
         $statusCode = 200;
         $domain = DB::table('urls')->first('*');

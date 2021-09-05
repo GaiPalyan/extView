@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Domain\DomainManager;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class DomainController extends Controller
 {
@@ -21,30 +23,12 @@ class DomainController extends Controller
     }
 
     /**
-     * Show domains main list
-     */
-    public function show()
-    {
-        return $this->manager->getDomainsList();
-    }
-
-    /**
-     * Show domain personal page
-     *
-     * @param int $id
-     */
-    public function domainPage(int $id)
-    {
-        return $this->manager->getDomainPersonalPage($id);
-    }
-
-    /**
      * Validate and store domain
      *
      * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      */
-    public function store(Request $request): \Illuminate\Http\RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         $validateDomain = Validator::make(
             $request->input('url'),
@@ -78,20 +62,42 @@ class DomainController extends Controller
     }
 
     /**
+     * Show domains main list
+     */
+    public function show(): View
+    {
+        return $this->manager->getDomainsList();
+    }
+
+    /**
+     * Show domain personal page
+     *
+     * @param int $id
+     * @return View
+     */
+    public function domainPage(int $id): View
+    {
+        return $this->manager->getDomainPersonalPage($id);
+    }
+
+    /**
      * Store domain parsing result
      *
      * @param int $id
-     * @return \Illuminate\Http\RedirectResponse
+     * @return RedirectResponse
      * @throws \DiDom\Exceptions\InvalidSelectorException
      */
-    public function storeCheck(int $id): \Illuminate\Http\RedirectResponse
+    public function storeCheck(int $id): RedirectResponse
     {
         $this->manager->prepareDomainCheckData($id);
         flash('Проверка прошла успешно')->success()->important();
-        return redirect()->route('domain_personal_page.show', $id);
+        return back();
     }
 
-    public function create()
+    /**
+     * @return View
+     */
+    public function create(): View
     {
         return view('domains.create');
     }
