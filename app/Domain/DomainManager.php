@@ -11,6 +11,7 @@ use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
+use stdClass;
 
 class DomainManager
 {
@@ -39,16 +40,16 @@ class DomainManager
 
     /**
      * @param string $name
-     * @return \stdClass|bool
+     * @return stdClass
      */
-    public function getDomainInfo(string $name): \stdClass|bool
+    public function getDomainInfo(string $name): stdClass
     {
         $normalizeUrl = self::normalize($name);
 
         if ($this->repository->isDomainExist(null, $normalizeUrl)) {
             return $this->repository->getDomain(null, $normalizeUrl);
         }
-        return false;
+        return new stdClass();
     }
 
     /**
