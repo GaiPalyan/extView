@@ -8,6 +8,9 @@ use App\Repository\DomainRepository;
 use Carbon\Carbon;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -28,15 +31,27 @@ class DomainManager
         return $this->repository->getList();
     }
 
-    public function getDomainPersonalPage(int $id)
+    /**
+     * @param int $id
+     * @return View
+     */
+    public function getDomainPersonalPage(int $id): View
     {
         return $this->repository->getPage($id);
     }
 
-    public function getDomainInfo(string $name)
+    /**
+     * @param string $name
+     * @return \stdClass|bool
+     */
+    public function getDomainInfo(string $name): \stdClass|bool
     {
         $normalizeUrl = self::normalize($name);
-        return $this->repository->getDomain(null, $normalizeUrl);
+
+        if ($this->repository->isDomainExist($normalizeUrl)) {
+            return $this->repository->getDomain(null, $normalizeUrl);
+        }
+        return false;
     }
 
     /**

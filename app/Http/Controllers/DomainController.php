@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Domain\DomainManager;
+use DiDom\Exceptions\InvalidSelectorException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -50,18 +51,18 @@ class DomainController extends Controller
 
         $requestData = $request->toArray();
         $name = $requestData['url']['name'];
-        $existDomainId = $this->manager->getDomainInfo($name);
+        $existDomain = $this->manager->getDomainInfo($name);
 
-        if ($existDomainId) {
+        if ($existDomain) {
             flash('Адрес уже существует')->info()->important();
-            return  redirect()->route('domain_personal_page.show', $existDomainId);
+            return  redirect()->route('domain_personal_page.show', $existDomain->id);
         }
 
         $this->manager->prepareBasicDomainData($name);
         flash('Адрес добавлен в базу!')->success()->important();
 
-        $assignedId = $this->manager->getDomainInfo($name);
-        return redirect()->route('domain_personal_page.show', $assignedId);
+        $createdDomain = $this->manager->getDomainInfo($name);
+        return redirect()->route('domain_personal_page.show', $createdDomain->id);
     }
 
     /**
@@ -88,7 +89,7 @@ class DomainController extends Controller
      *
      * @param int $id
      * @return RedirectResponse
-     * @throws \DiDom\Exceptions\InvalidSelectorException
+     * @throws InvalidSelectorException
      */
     public function storeCheck(int $id): RedirectResponse
     {

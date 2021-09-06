@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use stdClass;
 
 class DomainRepository
 {
@@ -24,11 +24,15 @@ class DomainRepository
         return view('domains.show', compact('domains', 'lastChecks'));
     }
 
-    public function getPage(int $id)
+    /**
+     * @param int $id
+     * @return View
+     */
+    public function getPage(int $id): View
     {
         $domain = $this->getDomain($id);
         if (!$domain) {
-            return abort(404);
+            abort(404);
         }
 
         $domainChecks = DB::table('url_checks')
@@ -42,13 +46,13 @@ class DomainRepository
     /**
      * @param int|null $id
      * @param string|null $name
-     * @return Builder|null
+     * @return stdClass
      */
-    public function getDomain(int $id = null, string $name = null)
+    public function getDomain(int $id = null, string $name = null): stdClass
     {
         return isset($id)
-            ? DB::table('urls')->find($id)
-            : DB::table('urls')->where('name', $name)->value('id');
+            ? DB::table('urls')->where('id', $id)->first()
+            : DB::table('urls')->where('name', $name)->first();
     }
 
     /**
@@ -90,5 +94,14 @@ class DomainRepository
         } catch (\Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function isDomainExist($name): bool
+    {
+        return DB::table('urls')->where('name', $name)->exists();
     }
 }
