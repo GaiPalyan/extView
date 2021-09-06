@@ -76,15 +76,14 @@ class DomainControllerTest extends TestCase
     public function testStoreDomainCheck(): void
     {
         $statusCode = 200;
-        $domain = DB::table('urls')->first('*');
         $body = '<h1>Header</h1> \n
                  <meta name="keywords" content="awesome content"> \n
                  <meta name="description" content="most popular app">';
-        Http::fake([$domain->name => Http::response($body, $statusCode)]);
-        $response = $this->post(route('domain_checks.store', (int) $domain->id));
+        Http::fake([$this->data['name'] => Http::response($body, $statusCode)]);
+        $response = $this->post(route('domain_checks.store', $this->id));
 
         $data = [
-            'url_id' => $domain->id,
+            'url_id' => $this->id,
             'status_code' => $statusCode,
             "h1" => 'Header',
             "keywords" => 'awesome content',
