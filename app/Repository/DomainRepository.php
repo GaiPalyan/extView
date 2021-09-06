@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use Exception;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use stdClass;
@@ -46,9 +49,9 @@ class DomainRepository
     /**
      * @param int|null $id
      * @param string|null $name
-     * @return object
+     * @return mixed
      */
-    public function getDomain(int $id = null, string $name = null): stdClass
+    public function getDomain(int $id = null, string $name = null): mixed
     {
         return DB::table('urls')
             ->where('id', $id)
@@ -64,7 +67,7 @@ class DomainRepository
     {
         try {
             DB::table('urls')->insert($domain);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -79,7 +82,7 @@ class DomainRepository
     {
         try {
             DB::table('urls')->where('id', $id)->update([$column => $value]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -92,7 +95,7 @@ class DomainRepository
     {
         try {
             DB::table('url_checks')->insert($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
