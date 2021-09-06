@@ -1,64 +1,107 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\DomainManager;
+use DiDom\Exceptions\InvalidSelectorException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\View\View;
 
 class DomainController extends Controller
 {
     private DomainManager $manager;
 
+    /**
+     * @param DomainManager $manager
+     */
     public function __construct(DomainManager $manager)
     {
         $this->manager = $manager;
     }
 
-    public function show()
-    {
-        return $this->manager->getDomainsList();
-    }
-
-    public function domainPage(int $id)
-    {
-        return $this->manager->getDomainPage($id);
-    }
-
-    public function store(Request $request)
+    /**
+     * Validate and store domain
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store(Request $request): RedirectResponse
     {
         $validateDomain = Validator::make(
-            $request->all(),
-            ['url.name' => 'required|url|max:255|unique:urls,name'],
+            $request->input('url'),
             [
+                'name' => ['required', 'url', 'max:255']
+            ],
+            $messages = [
                 'required' => 'Поле ввода не может быть пустым',
                 'url' => 'Некорректный адрес',
                 'max' => 'Максимальная допустимая длина адреса 255 символов',
-                'unique' => 'Такой адрес уже есть в базе'
             ]
         );
 
         if ($validateDomain->fails()) {
-            flash($validateDomain->errors()->first('url.name'))->error()->important();
-            return redirect()->route('domains.create');
+            flash($validateDomain->errors()->first('name'))->error()->important();
+
+            return back()->withInput()->withErrors($validateDomain);
         }
 
-        $data = $request->toArray();
-        $this->manager->prepareBasicDomainData($data);
+        $requestData = $request->toArray();
+        $name = $requestData['url']['name'];
+        $existDomain = $this->manager->getDomainInfo($name);
 
+        if (property_exists($existDomain, 'id')) {
+            flash('Адрес уже существует')->info()->important();
+            return  redirect()->route('domain_personal_page.show', $existDomain->id);
+        }
+
+        $this->manager->prepareBasicDomainData($name);
         flash('Адрес добавлен в базу!')->success()->important();
 
-        return redirect()->route('domains.create');
+        $createdDomain = $this->manager->getDomainInfo($name);
+
+        return redirect()->route('domain_personal_page.show', $createdDomain->id);
     }
 
-    public function storeCheck(int $id)
+    /**
+     * Show domains main list
+     */
+    public function show(): View
     {
-        $this->manager->prepareDomainCkeckData($id);
-        flash('Проверка прошла успешно')->success()->important();
-        return redirect()->route('domain.show', $id);
+        return $this->manager->getDomainsList();
     }
 
-    public function create()
+    /**
+     * Show domain personal page
+     *
+     * @param int $id
+     * @return View
+     */
+    public function domainPage(int $id): View
+    {
+        return $this->manager->getDomainPersonalPage($id);
+    }
+
+    /**
+     * Store domain parsing result
+     *
+     * @param int $id
+     * @return RedirectResponse
+     * @throws InvalidSelectorException
+     */
+    public function storeCheck(int $id): RedirectResponse
+    {
+        $this->manager->prepareDomainCheckData($id);
+        return back();
+    }
+
+    /**
+     * @return View
+     */
+    public function create(): View
     {
         return view('domains.create');
     }

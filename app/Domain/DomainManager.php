@@ -1,9 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Domain;
 
 use App\Repository\DomainRepository;
 use Carbon\Carbon;
+use DiDom\Document;
+use DiDom\Exceptions\InvalidSelectorException;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Http;
+use Illuminate\View\View;
+use stdClass;
 
 class DomainManager
 {
@@ -16,23 +24,43 @@ class DomainManager
         $this->time = Carbon::now();
     }
 
-    public function getDomainsList()
+    public function getDomainsList(): View
     {
         return $this->repository->getList();
     }
 
-    public function getDomainPage(int $id)
+    /**
+     * @param int $id
+     * @return View
+     */
+    public function getDomainPersonalPage(int $id): View
     {
         return $this->repository->getPage($id);
     }
 
-    public function prepareBasicDomainData(array $data)
+    /**
+     * @param string $name
+     * @return stdClass
+     */
+    public function getDomainInfo(string $name): stdClass
     {
-        $urlName = $data['url']['name'];
-        $normalizeUrl = self::normalize($urlName);
+        $normalizeUrl = self::normalize($name);
+
+        if ($this->repository->isDomainExist(null, $normalizeUrl)) {
+            return $this->repository->getDomain(null, $normalizeUrl);
+        }
+        return new stdClass();
+    }
+
+    /**
+     * @param string $domainName
+     */
+    public function prepareBasicDomainData(string $domainName): void
+    {
+        $normalizeName = self::normalize($domainName);
 
         $domain = [
-            'name' => $normalizeUrl,
+            'name' => $normalizeName,
             'created_at' => $this->time,
             'updated_at' => $this->time
         ];
@@ -40,17 +68,40 @@ class DomainManager
         $this->repository->saveDomain($domain);
     }
 
-    public function prepareDomainCkeckData(int $id)
+    /**
+     * @param int $id
+     * @return RedirectResponse|void
+     * @throws InvalidSelectorException
+     */
+    public function prepareDomainCheckData(int $id)
     {
-        $this->repository->getDomain($id);
+        $domain = $this->repository->getDomain($id);
+
+        try {
+            $response = Http::get($domain->name);
+        } catch (\Exception $e) {
+            flash('Адрес не существует')->error()->important();
+            return redirect()->route('domain_personal_page.show', $id);
+        }
+
+        $elements = new Document($response->body());
+        $h1 = optional($elements->first('h1'))->text();
+        $keywords = optional($elements->first('meta[name=keywords]'))->getAttribute('content');
+        $description = optional($elements->first('meta[name=description]'))->getAttribute('content');
 
         $domainCheck = [
             'url_id' => $id,
             'created_at' => $this->time,
-            'updated_at' => $this->time
+            'updated_at' => $this->time,
+            'status_code' => $response->status(),
+            'h1' => $h1,
+            'keywords' => $keywords,
+            'description' => $description
         ];
 
         $this->repository->saveDomainCheck($domainCheck);
+        $this->repository->updateDomainParam($id, 'updated_at', $this->time->toDateTimeString());
+        flash('Проверка прошла успешно')->success()->important();
     }
 
     private static function normalize(string $urlName): string

@@ -17,10 +17,12 @@
                             {{$domain->id}}
                         </td>
                         <td>
-                            <a href="{{route('domain.show', $domain->id)}}">{{$domain->name}}</a>
+                            <a href="{{route('domain_personal_page.show', $domain->id)}}">{{$domain->name}}</a>
                         </td>
                         <td>
                             {{data_get($lastChecks, $domain->id . '.last_check')}}
+                        </td>
+                        <td>
                             {{data_get($lastChecks, $domain->id . '.status_code')}}
                         </td>
                     </tr>
@@ -28,5 +30,6 @@
                 </tbody>
             </table>
         </div>
+    {{$domains->links()}}
 </div>
 @endsection

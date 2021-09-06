@@ -2,77 +2,96 @@
 
 namespace Tests\Feature;
 
-use Faker\Factory;
-use Faker\Generator;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class DomainControllerTest extends TestCase
 {
-    protected Generator $faker;
+    protected int $id;
+    protected string $time;
+    protected array $data;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->faker = Factory::create();
-        $this->seed();
+        $this->time = Carbon::now()->toDateTimeString();
+
+        $this->data = [
+            'name' => 'https://www.w.com.',
+            'created_at' => $this->time,
+            'updated_at' => $this->time
+        ];
+
+        $this->id = DB::table('urls')->insertGetId($this->data);
     }
 
-    public function testIndex()
+    public function testIndex(): void
     {
         $response = $this->get(route('domains.create'));
         $response->assertOk();
     }
 
-    public function testShow()
+    public function testShow(): void
     {
-        $id = $this->faker->numberBetween(1, 3);
-        $domain = DB::table('urls')->find($id)->name;
-        $response = $this->get(route('domains.show', $id));
+        $response = $this->get(route('domains_list.show', $this->id));
         $response->assertOk();
-        $response->assertSee($domain);
     }
 
     /**
      * @param string $domainName
      * @dataProvider domainNamesProvider
      */
-    public function testStore(string $domainName)
+    public function testStore(string $domainName): void
     {
         $domain = ['name' => $domainName];
-        $response = $this->post(route('domains.store'), ['url' => $domain]);
+        $response = $this->post(route('urls.store'), ['url' => $domain]);
         $response->assertSessionHasNoErrors();
         $response->assertRedirect();
         $this->assertDatabaseHas('urls', $domain);
+    }
+
+    public function testStoreExistingDomain(): void
+    {
+        $domain = ['name' => $this->data['name']];
+        $response = $this->post(route('urls.store'), ['url' => $domain]);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect(route('domain_personal_page.show', ['id' => $this->id]));
+        $this->assertDatabaseHas('urls', $this->data);
     }
 
     /**
      * @param string $incorrectDomainNames
      * @dataProvider incorrectDomainNamesProvider
      */
-    public function testStoreIncorrectDomainNames(string $incorrectDomainNames)
+    public function testStoreIncorrectDomainNames(string $incorrectDomainNames): void
     {
         $domain = ['name' => $incorrectDomainNames];
-        $response = $this->post(route('domains.store'), ['url' => $domain]);
+        $response = $this->post(route('urls.store'), ['url' => $domain]);
         $response->assertRedirect();
         $this->assertDatabaseMissing('urls', $domain);
     }
 
-    public function testStoreDomainCheck()
+    public function testStoreDomainCheck(): void
     {
-        $id = $this->faker->numberBetween(1, 3);
-        $domain = DB::table('urls')->find($id);
         $statusCode = 200;
-        $response = $this->post(route('domain.checks.store', $domain->id));
+        $body = '<h1>Header</h1> \n
+                 <meta name="keywords" content="awesome content"> \n
+                 <meta name="description" content="most popular app">';
+        Http::fake([$this->data['name'] => Http::response($body, $statusCode)]);
+        $response = $this->post(route('domain_checks.store', $this->id));
+
         $data = [
-            'url_id' => $domain->id,
-            'status_code' => null,
-            "h1" => null,
-            "keywords" => null,
-            "description" => null,
+            'url_id' => $this->id,
+            'status_code' => $statusCode,
+            "h1" => 'Header',
+            "keywords" => 'awesome content',
+            "description" => 'most popular app',
         ];
-        $response->assertRedirect();
         $this->assertDatabaseHas('url_checks', $data);
+        $response->assertSessionHasNoErrors();
+        $response->assertRedirect();
     }
 
     public function domainNamesProvider(): array

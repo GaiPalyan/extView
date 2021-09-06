@@ -1,17 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Repository;
 
+use Exception;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use stdClass;
 
 class DomainRepository
 {
-    public function getList()
+    public function getList(): View
     {
         $domains = DB::table('urls')
-            ->distinct()
-            ->get()
-            ->sortBy('id');
+            ->select('id', 'name')
+            ->orderByDesc('created_at')
+            ->simplePaginate(10);
         $lastChecks = DB::table('url_checks')
             ->select('url_id', 'status_code', DB::raw('max(updated_at) as last_check'))
             ->groupBy('url_id', 'status_code')
@@ -20,35 +27,86 @@ class DomainRepository
         return view('domains.show', compact('domains', 'lastChecks'));
     }
 
-    public function getPage(int $id)
+    /**
+     * @param int $id
+     * @return View
+     */
+    public function getPage(int $id): View
     {
-        $domain = DB::table('urls')->find($id);
-        if (!$domain) {
-            return abort(404);
+        if (!$this->isDomainExist($id)) {
+            abort(404);
         }
 
-        $domainChecks = DB::table('url_checks')->where('url_id', '=', $id)
+        $domain = $this->getDomain($id);
+        $domainChecks = DB::table('url_checks')
+            ->where('url_id', '=', $id)
+            ->orderByDesc('updated_at')
             ->paginate(10);
 
         return view('domains.domain', compact('domain', 'domainChecks'));
     }
 
-    public function getDomain(int $id)
+    /**
+     * @param int|null $id
+     * @param string|null $name
+     * @return mixed
+     */
+    public function getDomain(int $id = null, string $name = null): mixed
     {
-        DB::table('urls')->find($id);
+        return DB::table('urls')
+            ->where('id', $id)
+            ->orWhere('name', $name)
+            ->first();
     }
 
+    /**
+     * @param array $domain
+     * @return string|void
+     */
     public function saveDomain(array $domain)
     {
-        DB::table('urls')->insert($domain);
+        try {
+            DB::table('urls')->insert($domain);
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
     }
 
+    /**
+     * @param int $id
+     * @param string $column
+     * @param int|string $value
+     * @return string|void
+     */
+    public function updateDomainParam(int $id, string $column, int|string $value)
+    {
+        try {
+            DB::table('urls')->where('id', $id)->update([$column => $value]);
+        } catch (Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * @param array $data
+     * @return string|void
+     */
     public function saveDomainCheck(array $data)
     {
         try {
             DB::table('url_checks')->insert($data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $e->getMessage();
         }
+    }
+
+    /**
+     * @param int|null $id
+     * @param string|null $name
+     * @return bool
+     */
+    public function isDomainExist(int $id = null, string $name = null): bool
+    {
+        return DB::table('urls')->where('name', $name)->orWhere('id', $id)->exists();
     }
 }

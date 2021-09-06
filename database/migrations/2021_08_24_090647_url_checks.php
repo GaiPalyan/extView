@@ -16,13 +16,12 @@ class UrlChecks extends Migration
         Schema::create('url_checks', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('url_id');
-            $table->foreign('url_id')->references('id')->on('urls');
             $table->integer('status_code')->nullable();
             $table->string('h1', 255)->nullable();
             $table->text('keywords')->nullable();
             $table->text('description')->nullable();
-            $table->timestamp('created_at');
-            $table->timestamp('updated_at');
+            $table->timestamps();
+            $table->foreign('url_id')->references('id')->on('urls');
         });
     }
 
@@ -33,6 +32,6 @@ class UrlChecks extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('domain_checks');
+        Schema::dropIfExists('url_checks');
     }
 }
