@@ -53,7 +53,7 @@ class DomainController extends Controller
         $name = $requestData['url']['name'];
         $existDomain = $this->manager->getDomainInfo($name);
 
-        if ($existDomain) {
+        if (is_object($existDomain)) {
             flash('Адрес уже существует')->info()->important();
             return  redirect()->route('domain_personal_page.show', $existDomain->id);
         }

@@ -97,10 +97,10 @@ class DomainRepository
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return bool
      */
-    public function isDomainExist($name): bool
+    public function isDomainExist(string $name): bool
     {
         return DB::table('urls')->where('name', $name)->exists();
     }
