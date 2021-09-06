@@ -8,9 +8,6 @@ use App\Repository\DomainRepository;
 use Carbon\Carbon;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\View\View;
@@ -48,7 +45,7 @@ class DomainManager
     {
         $normalizeUrl = self::normalize($name);
 
-        if ($this->repository->isDomainExist($normalizeUrl)) {
+        if ($this->repository->isDomainExist(null, $normalizeUrl)) {
             return $this->repository->getDomain(null, $normalizeUrl);
         }
         return false;

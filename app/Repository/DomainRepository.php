@@ -30,11 +30,11 @@ class DomainRepository
      */
     public function getPage(int $id): View
     {
-        $domain = $this->getDomain($id);
-        if (!$domain) {
+        if (!$this->isDomainExist($id)) {
             abort(404);
         }
 
+        $domain = $this->getDomain($id);
         $domainChecks = DB::table('url_checks')
             ->where('url_id', '=', $id)
             ->orderByDesc('updated_at')
@@ -50,9 +50,7 @@ class DomainRepository
      */
     public function getDomain(int $id = null, string $name = null): stdClass
     {
-        return isset($id)
-            ? DB::table('urls')->where('id', $id)->first()
-            : DB::table('urls')->where('name', $name)->first();
+        return DB::table('urls')->where('id', $id)->orWhere('name', $name)->first();
     }
 
     /**
@@ -71,10 +69,10 @@ class DomainRepository
     /**
      * @param int $id
      * @param string $column
-     * @param $value
+     * @param int|string $value
      * @return string|void
      */
-    public function updateDomainParam(int $id, string $column, $value)
+    public function updateDomainParam(int $id, string $column, int|string $value)
     {
         try {
             DB::table('urls')->where('id', $id)->update([$column => $value]);
@@ -97,11 +95,12 @@ class DomainRepository
     }
 
     /**
-     * @param string $name
+     * @param int|null $id
+     * @param string|null $name
      * @return bool
      */
-    public function isDomainExist(string $name): bool
+    public function isDomainExist(int $id = null, string $name = null): bool
     {
-        return DB::table('urls')->where('name', $name)->exists();
+        return DB::table('urls')->where('name', $name)->orWhere('id', $id)->exists();
     }
 }
