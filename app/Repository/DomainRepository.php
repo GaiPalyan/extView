@@ -46,11 +46,14 @@ class DomainRepository
     /**
      * @param int|null $id
      * @param string|null $name
-     * @return stdClass
+     * @return object
      */
     public function getDomain(int $id = null, string $name = null): stdClass
     {
-        return DB::table('urls')->where('id', $id)->orWhere('name', $name)->first();
+        return DB::table('urls')
+            ->where('id', $id)
+            ->orWhere('name', $name)
+            ->first();
     }
 
     /**
