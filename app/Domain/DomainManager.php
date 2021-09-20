@@ -46,8 +46,9 @@ class DomainManager
     {
         $normalizeUrl = self::normalize($name);
 
-        if ($this->repository->isDomainExist(null, $normalizeUrl)) {
-            return $this->repository->getDomain(null, $normalizeUrl);
+        if ($this->repository->isDomainExist(
+            $normalizeUrl)) {
+            return $this->repository->getDomainByName($normalizeUrl);
         }
         return new stdClass();
     }
@@ -75,7 +76,7 @@ class DomainManager
      */
     public function prepareDomainCheckData(int $id)
     {
-        $domain = $this->repository->getDomain($id);
+        $domain = $this->repository->getDomainById($id);
 
         try {
             $response = Http::get($domain->name);

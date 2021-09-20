@@ -33,11 +33,11 @@ class DomainRepository
      */
     public function getPage(int $id): View
     {
-        if (!$this->isDomainExist($id)) {
+        if (!$this->isDomainExistById($id)) {
             abort(404);
         }
 
-        $domain = $this->getDomain($id);
+        $domain = $this->getDomainById($id);
         $domainChecks = DB::table('url_checks')
             ->where('url_id', '=', $id)
             ->orderByDesc('updated_at')
@@ -47,15 +47,24 @@ class DomainRepository
     }
 
     /**
-     * @param int|null $id
-     * @param string|null $name
+     * @param int $id
      * @return mixed
      */
-    public function getDomain(int $id = null, string $name = null): mixed
+    public function getDomainById(int $id): mixed
     {
         return DB::table('urls')
             ->where('id', $id)
-            ->orWhere('name', $name)
+            ->first();
+    }
+
+    /**
+     * @param string $name
+     * @return mixed
+     */
+    public function getDomainByName(string $name): mixed
+    {
+        return DB::table('urls')
+            ->where('name', $name)
             ->first();
     }
 
@@ -101,12 +110,29 @@ class DomainRepository
     }
 
     /**
-     * @param int|null $id
-     * @param string|null $name
+     * @param string $identity
      * @return bool
      */
-    public function isDomainExist(int $id = null, string $name = null): bool
+    public function isDomainExist(string $identity): bool
     {
-        return DB::table('urls')->where('name', $name)->orWhere('id', $id)->exists();
+        return $this->isDomainExistById((int) $identity) || $this->isDomainExistByName($identity);
+    }
+
+    /**
+     * @param int $id
+     * @return bool
+     */
+    public function isDomainExistById(int $id): bool
+    {
+        return DB::table('urls')->where('id', $id)->exists();
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function isDomainExistByName(string $name): bool
+    {
+        return DB::table('urls')->where('name', $name)->exists();
     }
 }
