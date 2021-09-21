@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use Exception;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
-use stdClass;
 
-class DomainRepository
+class DBDomainRepository implements DBDomainRepositoryInterface
 {
     public function getList(): View
     {
@@ -27,10 +24,6 @@ class DomainRepository
         return view('domains.show', compact('domains', 'lastChecks'));
     }
 
-    /**
-     * @param int $id
-     * @return View
-     */
     public function getPage(int $id): View
     {
         if (!$this->isDomainExistById($id)) {
@@ -46,10 +39,6 @@ class DomainRepository
         return view('domains.domain', compact('domain', 'domainChecks'));
     }
 
-    /**
-     * @param int $id
-     * @return mixed
-     */
     public function getDomainById(int $id): mixed
     {
         return DB::table('urls')
@@ -57,10 +46,6 @@ class DomainRepository
             ->first();
     }
 
-    /**
-     * @param string $name
-     * @return mixed
-     */
     public function getDomainByName(string $name): mixed
     {
         return DB::table('urls')
@@ -68,10 +53,6 @@ class DomainRepository
             ->first();
     }
 
-    /**
-     * @param array $domain
-     * @return string|void
-     */
     public function saveDomain(array $domain)
     {
         try {
@@ -81,12 +62,6 @@ class DomainRepository
         }
     }
 
-    /**
-     * @param int $id
-     * @param string $column
-     * @param int|string $value
-     * @return string|void
-     */
     public function updateDomainParam(int $id, string $column, int|string $value)
     {
         try {
@@ -96,10 +71,6 @@ class DomainRepository
         }
     }
 
-    /**
-     * @param array $data
-     * @return string|void
-     */
     public function saveDomainCheck(array $data)
     {
         try {
@@ -109,28 +80,16 @@ class DomainRepository
         }
     }
 
-    /**
-     * @param string $identity
-     * @return bool
-     */
     public function isDomainExist(string $identity): bool
     {
         return $this->isDomainExistById((int) $identity) || $this->isDomainExistByName($identity);
     }
 
-    /**
-     * @param int $id
-     * @return bool
-     */
     public function isDomainExistById(int $id): bool
     {
         return DB::table('urls')->where('id', $id)->exists();
     }
 
-    /**
-     * @param string $name
-     * @return bool
-     */
     public function isDomainExistByName(string $name): bool
     {
         return DB::table('urls')->where('name', $name)->exists();

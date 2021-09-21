@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain;
 
-use App\Repository\DomainRepository;
+use App\Repository\DBDomainRepository;
+use App\Repository\DBDomainRepositoryInterface;
 use Carbon\Carbon;
 use DiDom\Document;
 use DiDom\Exceptions\InvalidSelectorException;
@@ -15,10 +16,10 @@ use stdClass;
 
 class DomainManager
 {
-    private DomainRepository $repository;
+    private DBDomainRepositoryInterface $repository;
     private Carbon $time;
 
-    public function __construct(DomainRepository $repository)
+    public function __construct(DBDomainRepositoryInterface $repository)
     {
         $this->repository = $repository;
         $this->time = Carbon::now();
@@ -46,8 +47,7 @@ class DomainManager
     {
         $normalizeUrl = self::normalize($name);
 
-        if ($this->repository->isDomainExist(
-            $normalizeUrl)) {
+        if ($this->repository->isDomainExist($normalizeUrl)) {
             return $this->repository->getDomainByName($normalizeUrl);
         }
         return new stdClass();
