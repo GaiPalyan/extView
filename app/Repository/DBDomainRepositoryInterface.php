@@ -65,5 +65,4 @@ interface DBDomainRepositoryInterface
      * @return bool
      */
     public function isDomainExistByName(string $name): bool;
-
 }
