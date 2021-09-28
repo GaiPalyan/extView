@@ -15735,7 +15735,7 @@ jQuery.extend( {
 			// timeout handle
 			timeoutTimer,
 
-			// Url cleanup var
+			// Urls cleanup var
 			urlAnchor,
 
 			// Request state (becomes false upon send and true upon completion)

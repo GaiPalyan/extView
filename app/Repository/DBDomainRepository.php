@@ -4,68 +4,56 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Models\UrlChecks;
+use App\Models\Urls;
 use Exception;
-use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
 
 class DBDomainRepository implements DBDomainRepositoryInterface
 {
-    public function getList(): View
+    public function getList(): array
     {
-        $domains = DB::table('urls')
-            ->select('id', 'name')
+        $domains = Urls::select('id', 'name')
             ->orderByDesc('created_at')
             ->simplePaginate(10);
-        $lastChecks = DB::table('url_checks')
-            ->select('url_id', 'status_code', DB::raw('max(updated_at) as last_check'))
+        $lastChecks = UrlChecks::select('url_id', 'status_code')
+            ->selectRaw('max(updated_at) as last_check')
             ->groupBy('url_id', 'status_code')
             ->get()
             ->keyBy('url_id');
-        return view('domains.show', compact('domains', 'lastChecks'));
+        return compact('domains', 'lastChecks');
     }
 
-    public function getPage(int $id): View
+    public function getPage(int $id): array
     {
         if (!$this->isDomainExistById($id)) {
             abort(404);
         }
 
         $domain = $this->getDomainById($id);
-        $domainChecks = DB::table('url_checks')
-            ->where('url_id', '=', $id)
+        $domainChecks = UrlChecks::where('url_id', $id)
             ->orderByDesc('updated_at')
             ->paginate(10);
 
-        return view('domains.domain', compact('domain', 'domainChecks'));
+        return compact('domain', 'domainChecks');
     }
 
-    public function getDomainById(int $id): mixed
+    public function getDomainById(int $id): Urls
     {
-        return DB::table('urls')
-            ->where('id', $id)
-            ->first();
+        return Urls::where('id', $id)
+            ->firstOrNew();
     }
 
-    public function getDomainByName(string $name): mixed
+    public function getDomainByName(string $name): Urls
     {
-        return DB::table('urls')
-            ->where('name', $name)
-            ->first();
+        return Urls::where('name', $name)
+            ->firstOrNew();
     }
 
     public function saveDomain(array $domain)
     {
+        $domain = Urls::create($domain);
         try {
-            DB::table('urls')->insert($domain);
-        } catch (Exception $e) {
-            return $e->getMessage();
-        }
-    }
-
-    public function updateDomainParam(int $id, string $column, int|string $value)
-    {
-        try {
-            DB::table('urls')->where('id', $id)->update([$column => $value]);
+            $domain->save();
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -73,8 +61,9 @@ class DBDomainRepository implements DBDomainRepositoryInterface
 
     public function saveDomainCheck(array $data)
     {
+        $domainCheck = UrlChecks::create($data);
         try {
-            DB::table('url_checks')->insert($data);
+            $domainCheck->save();
         } catch (Exception $e) {
             return $e->getMessage();
         }
@@ -87,11 +76,11 @@ class DBDomainRepository implements DBDomainRepositoryInterface
 
     public function isDomainExistById(int $id): bool
     {
-        return DB::table('urls')->where('id', $id)->exists();
+        return Urls::where('id', $id)->exists();
     }
 
     public function isDomainExistByName(string $name): bool
     {
-        return DB::table('urls')->where('name', $name)->exists();
+        return Urls::where('name', $name)->exists();
     }
 }

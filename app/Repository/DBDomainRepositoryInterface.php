@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
+use App\Models\Urls;
 use Illuminate\View\View;
 
 interface DBDomainRepositoryInterface
 {
-    public function getList(): View;
+    public function getList(): array;
 
     /**
      * @param int $id
      * @return View
      */
-    public function getPage(int $id): View;
+    public function getPage(int $id): array;
 
     /**
      * @param int $id
@@ -24,23 +25,15 @@ interface DBDomainRepositoryInterface
 
     /**
      * @param string $name
-     * @return mixed
+     * @return Urls
      */
-    public function getDomainByName(string $name): mixed;
+    public function getDomainByName(string $name): Urls;
 
     /**
      * @param array $domain
      * @return string|void
      */
     public function saveDomain(array $domain);
-
-    /**
-     * @param int $id
-     * @param string $column
-     * @param int|string $value
-     * @return string|void
-     */
-    public function updateDomainParam(int $id, string $column, int|string $value);
 
     /**
      * @param array $data
