@@ -12,10 +12,12 @@ class DBDomainRepository implements DBDomainRepositoryInterface
 {
     public function getList(): array
     {
-        $domains = Urls::select('id', 'name')
+        $domains = Urls::query()
+            ->select('id', 'name')
             ->orderByDesc('created_at')
             ->simplePaginate(10);
-        $lastChecks = UrlChecks::select('url_id', 'status_code')
+        $lastChecks = UrlChecks::query()
+            ->select('url_id', 'status_code')
             ->selectRaw('max(updated_at) as last_check')
             ->groupBy('url_id', 'status_code')
             ->get()
