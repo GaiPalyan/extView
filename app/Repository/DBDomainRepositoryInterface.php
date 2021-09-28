@@ -5,15 +5,17 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Models\Urls;
-use Illuminate\View\View;
 
 interface DBDomainRepositoryInterface
 {
+    /**
+     * @return array
+     */
     public function getList(): array;
 
     /**
      * @param int $id
-     * @return View
+     * @return array
      */
     public function getPage(int $id): array;
 
