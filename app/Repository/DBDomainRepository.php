@@ -12,14 +12,9 @@ class DBDomainRepository implements DBDomainRepositoryInterface
 {
     public function getList(): array
     {
-        $domains = Urls::select('id', 'name')
-            ->orderByDesc('created_at')
-            ->simplePaginate(10);
-        $lastChecks = UrlChecks::select('url_id', 'status_code')
-            ->selectRaw('max(updated_at) as last_check')
-            ->groupBy('url_id', 'status_code')
-            ->get()
-            ->keyBy('url_id');
+        $domains = Urls::domainsList()->simplePaginate(10);
+        $lastChecks = UrlChecks::domainsCheckingData()->get()->keyBy('url_id');
+
         return compact('domains', 'lastChecks');
     }
 
@@ -30,9 +25,7 @@ class DBDomainRepository implements DBDomainRepositoryInterface
         }
 
         $domain = $this->getDomainById($id);
-        $domainChecks = UrlChecks::where('url_id', $id)
-            ->orderByDesc('updated_at')
-            ->paginate(10);
+        $domainChecks = UrlChecks::domainCheckingData($id)->paginate(10);
 
         return compact('domain', 'domainChecks');
     }

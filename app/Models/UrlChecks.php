@@ -26,4 +26,16 @@ class UrlChecks extends Model
     {
         return $this->belongsTo(__NAMESPACE__ . '\Url.php');
     }
+
+    public function scopeDomainCheckingData($query, $id)
+    {
+        return $query->where('url_id', $id);
+    }
+
+    public function scopeDomainsCheckingData($query)
+    {
+        return $query->select('url_id', 'status_code')
+            ->selectRaw('max(updated_at) as last_check')
+            ->groupBy('url_id', 'status_code');
+    }
 }
