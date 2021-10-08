@@ -12,7 +12,7 @@ class DBDomainRepository implements DBDomainRepositoryInterface
 {
     public function getList(): array
     {
-        $domains = Urls::domainsList()->simplePaginate(10);
+        $domains = Urls::domainsList()->paginate(5);
         $lastChecks = UrlChecks::domainsCheckingData()->get()->keyBy('url_id');
 
         return compact('domains', 'lastChecks');
