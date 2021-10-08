@@ -1,8 +1,6 @@
 ####My simple laravel app  made in order to try and practice with it.
 
-
-##[_extView_](http://extview.herokuapp.com/)
-
+###[_extView_](http://extview.herokuapp.com/)
 
 ![Альтернативный текст](https://laravel.com/img/logotype.min.svg)
 ===================================
