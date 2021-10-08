@@ -49,21 +49,21 @@ class DomainController extends Controller
             return back()->withInput()->withErrors($validateDomain);
         }
 
-        $requestData = $request->toArray();
-        $name = $requestData['url']['name'];
-        $existDomain = $this->manager->getDomainInfo($name);
+        $domainName = $request->toArray()['url']['name'];
+        $existDomain = $this->manager->getDomainInfo($domainName);
+        $existDomainId = $existDomain->getAttribute('id');
 
-        if (property_exists($existDomain, 'id')) {
+        if (!is_null($existDomainId)) {
             flash('Адрес уже существует')->info()->important();
-            return  redirect()->route('domain_personal_page.show', $existDomain->id);
+            return  redirect()->route('domain_personal_page.show', $existDomainId);
         }
 
-        $this->manager->prepareBasicDomainData($name);
+        $this->manager->prepareBasicDomainData($domainName);
         flash('Адрес добавлен в базу!')->success()->important();
 
-        $createdDomain = $this->manager->getDomainInfo($name);
+        $createdDomain = $this->manager->getDomainInfo($domainName);
 
-        return redirect()->route('domain_personal_page.show', $createdDomain->id);
+        return redirect()->route('domain_personal_page.show', $createdDomain->getAttribute('id'));
     }
 
     /**
@@ -71,7 +71,8 @@ class DomainController extends Controller
      */
     public function show(): View
     {
-        return $this->manager->getDomainsList();
+        $list = $this->manager->getDomainsList();
+        return view('domains.show', $list);
     }
 
     /**
@@ -82,7 +83,8 @@ class DomainController extends Controller
      */
     public function domainPage(int $id): View
     {
-        return $this->manager->getDomainPersonalPage($id);
+        $domain =  $this->manager->getDomainPersonalPage($id);
+        return view('domains.domain', $domain);
     }
 
     /**
