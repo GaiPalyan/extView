@@ -15,7 +15,7 @@ class DBDomainRepository implements DBDomainRepositoryInterface
         $domains = DB::table('urls')
             ->select('id', 'name')
             ->orderByDesc('created_at')
-            ->simplePaginate(10);
+            ->paginate(8);
         $lastChecks = DB::table('url_checks')
             ->select('url_id', 'status_code', DB::raw('max(updated_at) as last_check'))
             ->groupBy('url_id', 'status_code')
