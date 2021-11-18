@@ -2,9 +2,9 @@
 
 ###[_extView_](http://extview.herokuapp.com/)
 
-![Альтернативный текст](https://laravel.com/img/logotype.min.svg)
+[![Альтернативный текст](https://laravel.com/img/logotype.min.svg)](laravel.com)
 ===================================
-![Альтернативный текст](https://maxdemarzidotcom.files.wordpress.com/2014/09/herokulogo.png)
+[![Альтернативный текст](https://maxdemarzidotcom.files.wordpress.com/2014/09/herokulogo.png)](https://devcenter.heroku.com/start)
 
 #### Test and linter status:
 [![PHP CI](https://github.com/GaiPalyan/php-project-lvl3/actions/workflows/lint.yml/badge.svg)](https://github.com/GaiPalyan/php-project-lvl3/actions/workflows/lint.yml)
