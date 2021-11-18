@@ -2,7 +2,7 @@
 
 ###[_extView_](http://extview.herokuapp.com/)
 
-[![Альтернативный текст](https://laravel.com/img/logotype.min.svg)](laravel.com)
+[![Альтернативный текст](https://prnt.sc/1zzcys1)](https://laravel.com/)
 ===================================
 [![Альтернативный текст](https://maxdemarzidotcom.files.wordpress.com/2014/09/herokulogo.png)](https://devcenter.heroku.com/start)
 
