@@ -150,7 +150,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may change the domain of the cookie used to identify a session
-    | in your application. This will determine which domains the cookie is
+    | in your application. This will determine which urls the cookie is
     | available to in your application. A sensible default has been set.
     |
     */
