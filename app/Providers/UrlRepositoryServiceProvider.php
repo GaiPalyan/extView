@@ -2,11 +2,11 @@
 
 namespace App\Providers;
 
-use App\Repository\DBDomainRepositoryInterface;
+use App\Domain\UrlRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
-use App\Repository\DBDomainRepository;
+use App\Repository\UrlRepository;
 
-class DBDomainRepositoryServiceProvider extends ServiceProvider
+class UrlRepositoryServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -25,6 +25,6 @@ class DBDomainRepositoryServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->app->bind(DBDomainRepositoryInterface::class, DBDomainRepository::class);
+        $this->app->bind(UrlRepositoryInterface::class, UrlRepository::class);
     }
 }

@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @mixin Builder
  */
-class Urls extends Model
+class Url extends Model
 {
     use HasFactory;
 
@@ -25,10 +25,5 @@ class Urls extends Model
     public function checks(): HasMany
     {
         return $this->hasMany(__NAMESPACE__ . '\UrlChecks.php');
-    }
-
-    public function scopeDomainsList($query)
-    {
-        return $query->select('id', 'name')->orderByDesc('created_at');
     }
 }

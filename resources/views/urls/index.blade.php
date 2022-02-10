@@ -12,24 +12,24 @@
                         <th>Код ответа</th>
                     </tr>
                     <tr>
-                        @foreach($domains as $domain)
+                        @foreach($urls as $url)
                         <td>
-                            {{$domain->id}}
+                            {{$url->id}}
                         </td>
                         <td>
-                            <a href="{{route('domain_personal_page.show', $domain->id)}}">{{$domain->name}}</a>
+                            <a href="{{route('url.show', $url->id)}}">{{$url->name}}</a>
                         </td>
                         <td>
-                            {{data_get($lastChecks, $domain->id . '.last_check')}}
+                            {{data_get($lastChecks, $url->id . '.last_check')}}
                         </td>
                         <td>
-                            {{data_get($lastChecks, $domain->id . '.status_code')}}
+                            {{data_get($lastChecks, $url->id . '.status_code')}}
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
         </div>
-    {{$domains->links()}}
+    {{$urls->links()}}
 </div>
 @endsection
