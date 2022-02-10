@@ -1,7 +1,5 @@
 #### My simple laravel app  made in order to try and practice with it.
 
-### [_extView_](http://extview.herokuapp.com/) Let's check your web-page.
-
 ~~~
 1. $ git clone git@github.com:GaiPalyan/extView.git
 2. $ make setup
@@ -11,7 +9,7 @@
 
 [![Альтернативный текст](Laravel-logo.png)](https://laravel.com/)
 ===================================
-[![Альтернативный текст](heroku-logo.png)](https://devcenter.heroku.com/start)
+[![Альтернативный текст](heroku-logo.png)](http://extview.herokuapp.com/)
 
 #### Test and linter status:
 [![PHP CI](https://github.com/GaiPalyan/php-project-lvl3/actions/workflows/lint.yml/badge.svg)](https://github.com/GaiPalyan/php-project-lvl3/actions/workflows/lint.yml)

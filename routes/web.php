@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\DomainController;
+use App\Http\Controllers\UrlController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,8 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [DomainController::class, 'create'])->name('domains.create');
-Route::post('/urls', [DomainController::class, 'store'])->name('urls.store');
-Route::get('/urls', [DomainController::class, 'show'])->name('domains_list.show');
-Route::get('/urls/{id}', [DomainController::class, 'domainPage'])->name('domain_personal_page.show');
-Route::post('/urls/{id}/checks', [DomainController::class, 'storeCheck'])->name('domain_checks.store');
+Route::get('/', [UrlController::class, 'create'])->name('urls.create');
+Route::post('/urls', [UrlController::class, 'store'])->name('urls.store');
+Route::get('/urls', [UrlController::class, 'index'])->name('urls.index');
+Route::get('/urls/{url}', [UrlController::class, 'show'])->name('url.show');
+Route::post('/urls/{url}/checks', [UrlController::class, 'storeCheck'])->name('url_checks.store');

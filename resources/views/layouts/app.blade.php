@@ -12,7 +12,7 @@
     <body class="min-vh-100 d-flex flex-column">
     <header class="flex-shrink-0">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark">
-                <a class="navbar-brand" href="{{route('domains.create')}}">Анализатор страниц</a>
+                <a class="navbar-brand" href="{{route('urls.create')}}">{{__('Анализатор страниц')}}</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
                         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggle-icon"></span>
@@ -20,10 +20,10 @@
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link active" href="{{route('domains.create')}}">Главная</a>
+                            <a class="nav-link active" href="{{route('urls.create')}}">{{__('Главная')}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route('domains_list.show')}}">Сайты</a>
+                            <a class="nav-link" href="{{route('urls.index')}}">{{__('Сайты')}}</a>
                         </li>
                     </ul>
                 </div>
@@ -36,7 +36,7 @@
         <footer class="border-top py-3 mt-5 flex-shrink-0">
             <div class="container-lg">
                 <div class="text-center">
-                    <a href="https://github.com/GaiPalyan" target="_blank">My gitHub</a>
+                    <a href="https://github.com/GaiPalyan" target="_blank">{{__('My gitHub')}}</a>
                 </div>
             </div>
         </footer>

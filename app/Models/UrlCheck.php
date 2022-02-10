@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @mixin Builder
  */
-class UrlChecks extends Model
+class UrlCheck extends Model
 {
     use HasFactory;
 
@@ -25,17 +25,5 @@ class UrlChecks extends Model
     public function domain(): BelongsTo
     {
         return $this->belongsTo(__NAMESPACE__ . '\Url.php');
-    }
-
-    public function scopeDomainCheckingData($query, $id)
-    {
-        return $query->where('url_id', $id);
-    }
-
-    public function scopeDomainsCheckingData($query)
-    {
-        return $query->select('url_id', 'status_code')
-            ->selectRaw('max(updated_at) as last_check')
-            ->groupBy('url_id', 'status_code');
     }
 }
