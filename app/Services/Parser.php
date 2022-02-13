@@ -21,14 +21,4 @@ class Parser
             'description' => $description
         ];
     }
-
-    public static function toLower(string $url): string
-    {
-        $parts = parse_url($url);
-        $query = array_key_exists('query', $parts) ? "?{$parts['query']}" : '';
-
-        return strtolower(implode([
-            $parts['scheme'], '://', $parts['host'], $parts['path'] ?? ''
-            ])) . $query;
-    }
 }

@@ -23,7 +23,7 @@
                             <a class="nav-link active" href="{{route('urls.create')}}">{{__('Главная')}}</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{{route('urls.index')}}">{{__('Сайты')}}</a>
+                            <a class="nav-link" id="index" href="{{route('urls.index')}}">{{__('Сайты')}}</a>
                         </li>
                     </ul>
                 </div>

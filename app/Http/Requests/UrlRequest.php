@@ -28,15 +28,14 @@ class UrlRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|url|max:255|unique:urls'
+            'name' => 'string|url|max:255|unique:urls'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'required' => 'Поле ввода не может быть пустым',
-            'url' => 'Некорректный адрес',
+            'url' => 'Incorrect url',
             'max' => 'Максимальная допустимая длина адреса 255 символов',
             'unique' => 'Такой адрес уже есть в базе, воспользуйтесь поиском.'
         ];
@@ -46,15 +45,31 @@ class UrlRequest extends FormRequest
     {
         $url = $this->input('name');
 
+
         $prepared = !Str::startsWith($url, ['http://', 'https://']) ? implode(['https://', $url]) : $url;
+
+        $parts = parse_url($prepared);
+        if ($parts) {
+            $prepared = self::toLower($parts);
+        }
         $this->merge(['name' => $prepared]);
     }
 
-    protected function failedValidation(Validator $validator): void
+    protected function failedValidation(Validator $validator)
     {
         if ($validator->fails()) {
             flash($validator->errors()->first('name'))->error()->important();
         }
         parent::failedValidation($validator);
+    }
+
+    private static function toLower(array $parts): string
+    {
+        $query = array_key_exists('query', $parts)
+            ? "?{$parts['query']}"
+            : '';
+
+        $lowerCaseUrl = strtolower(implode([$parts['scheme'], '://', $parts['host'], $parts['path'] ?? '']));
+        return "{$lowerCaseUrl}{$query}";
     }
 }

@@ -106,7 +106,7 @@ class UrlControllerTest extends TestCase
     public function fullNameUrlsProvider(): array
     {
         return [
-            ['https://www.dd.ru'],
+            ['https://www.ya.ru'],
             ['https://www.google.com'],
             ['https://www.php.net']
         ];

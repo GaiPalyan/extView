@@ -12,24 +12,24 @@
                         <th>Код ответа</th>
                     </tr>
                     <tr>
-                        @foreach($urls as $url)
+                        @foreach($list as $url)
                         <td>
-                            {{$url->id}}
+                            {{ $url->id }}
                         </td>
                         <td>
                             <a href="{{route('url.show', $url->id)}}">{{$url->name}}</a>
                         </td>
                         <td>
-                            {{data_get($lastChecks, $url->id . '.last_check')}}
+                            {{ $url->last_check }}
                         </td>
                         <td>
-                            {{data_get($lastChecks, $url->id . '.status_code')}}
+                            {{ $url->status_code }}
                         </td>
                     </tr>
                 @endforeach
                 </tbody>
             </table>
         </div>
-    {{$urls->links()}}
+    {{$list->links()}}
 </div>
 @endsection

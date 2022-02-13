@@ -18,7 +18,7 @@
                     <td>{{$url->created_at}}</td>
                 </tr>
                 <tr>
-                    <td>{{__('Дата создания')}}</td>
+                    <td>{{__('Дата обновления')}}</td>
                     <td>{{$url->updated_at}}</td>
                 </tr>
                 </tbody>

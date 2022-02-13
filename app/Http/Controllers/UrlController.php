@@ -27,17 +27,16 @@ class UrlController extends Controller
 
     public function store(UrlRequest $request): RedirectResponse
     {
-        $url = Parser::toLower($request->input('name'));
 
         try {
-            Http::get($url)->throw();
+            Http::get($request->input('name'))->throw();
         } catch (\Exception $e) {
             $message = flash('Некорректный адрес')->error()->important();
             return back()->withErrors($message->messages);
         }
 
         try {
-            $url = $this->manager->saveUrl($url);
+            $url = $this->manager->saveUrl($request->input('name'));
             return redirect()->route('url.show', $url);
         } catch (FailedUrlSaveException $exception) {
             flash($exception->getMessage())->error()->important();
