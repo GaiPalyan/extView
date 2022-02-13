@@ -21,19 +21,25 @@ require('./ajaxSetup');
 })*/
 
 
-/*$(function () {
+$(function () {
+
     $('#url_store').on('submit', function (event) {
         event.preventDefault();
-        const name = $("#my_url").val();
+        let name = $("#my_url").val();
+        let data = {
+            "name": name
+        };
+
         $.ajax({
             url:$(this).attr('action'),
             method:$(this).attr('method'),
-            data: {
-                name:name
-            },
+            data: JSON.stringify(data),
             success: function (response) {
                 console.log(response)
             },
+            error: function (error) {
+                console.log(data);
+            }
         })
     })
-})*/
+})
