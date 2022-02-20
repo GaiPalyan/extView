@@ -12,17 +12,19 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class UrlRepository implements UrlRepositoryInterface
 {
-    public function getList(): array
+    public function getList($inputText = ''): array
     {
-        $list = Url::join('url_checks as checks', 'urls.id', '=', 'checks.url_id')
-            ->selectRaw(
-                'urls.id,
+        $list = Url::selectRaw(
+            'urls.id,
                 urls.name as name,
                 max(checks.updated_at) as last_check,
                 checks.status_code'
-            )->groupBy('urls.id', 'status_code')
-            ->orderByDesc('last_check')
-            ->paginate(5);
+        )->leftJoin('url_checks as checks', function ($join) {
+            $join->on('urls.id', '=', 'checks.url_id');
+        })->orWhere('name', 'like', "%{$inputText}%")
+          ->groupBy('urls.id', 'status_code')
+          ->orderByDesc('last_check')
+          ->paginate(5);
 
         return compact('list');
     }
@@ -51,5 +53,10 @@ class UrlRepository implements UrlRepositoryInterface
         $urlCheck = new UrlCheck();
         $urlCheck->fill(array_merge(['url_id' => $url->getAttribute('id')], $parsedBody));
         $urlCheck->save();
+    }
+
+    public function getUrlLustCheck(Url $url): UrlCheck
+    {
+        return UrlCheck::where('url_id', $url->getAttribute('id'))->latest()->first();
     }
 }

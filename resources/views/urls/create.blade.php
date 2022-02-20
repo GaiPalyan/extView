@@ -7,7 +7,7 @@
                 <div class="col-12 col-md-10 col-lg-8 mx-auto text-white" id="test">
                     <h1 class="display-3">{{__('Анализатор страниц')}}</h1>
                     <p class="lead">{{__('Бесплатно проверяйте сайты на SEO пригодность')}}</p>
-                    <form id="url_store" class="d-flex justify-content-center" action="{{ route('urls.store') }}" method="post">
+                    <form id="url_store" class="d-flex justify-content-center" action="{{ route('api.store') }}" method="post">
                         @csrf
                         <input class="form-control form-control-lg @error('name') is-invalid @enderror"
                                id="my_url"

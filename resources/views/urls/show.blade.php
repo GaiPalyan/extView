@@ -1,37 +1,37 @@
 @extends('layouts.app')
 @section('content')
+<script id="entity" src="{{ asset('js/urls/show.js') }}">
+    @json($url)
+</script>
 <div class="container-lg">
-        <h1 class="mt-5 mb-3">Адрес: {{$url->name}}</h1>
+        <h1 id="h1_url_name" class="mt-5 mb-3">{{__('Адрес: ')}}</h1>
         <div class="table-responsive">
             <table class="table table-bordered table-hover text-nowrap">
                 <tbody>
-                <tr>
-                    <td>{{__('ID')}}</td>
-                    <td>{{$url->id}}</td>
-                </tr>
-                <tr>
-                    <td>{{__('Имя')}}</td>
-                    <td>{{$url->name}}</td>
-                </tr>
-                <tr>
-                    <td>{{__('Дата создания')}}</td>
-                    <td>{{$url->created_at}}</td>
-                </tr>
-                <tr>
-                    <td>{{__('Дата обновления')}}</td>
-                    <td>{{$url->updated_at}}</td>
-                </tr>
+                    <tr id="id">
+                        <td>{{__('ID')}}</td>
+                    </tr>
+                    <tr id="table_url_name">
+                        <td>{{__('Имя')}}</td>
+                    </tr>
+                    <tr id="created_at">
+                        <td>{{__('Дата создания')}}</td>
+                    </tr>
+                    <tr id="updated_at">
+                        <td>{{__('Дата обновления')}}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
     <div class="table-responsive">
         <h2 class="mt-5 mb-3">{{__('Проверки')}}</h2>
-        <form class="mb-2" action="{{ route('url_checks.store', $url) }}" method="post">
+        <form id="check" class="mb-2" action="{{ route('api.check_store', $url) }}" method="post">
             @csrf
-            <input class="btn btn-primary" type="submit" value="Запустить проверку">
+            <input id="check" class="btn btn-primary" type="submit" value="Запустить проверку">
         </form>
         <table class="table table-bordered table-hover text-nowrap">
+            <thead>
                 <tr>
                     <th>{{__('ID')}}</th>
                     <th>{{__('Код ответа')}}</th>
@@ -40,16 +40,9 @@
                     <th>{{__('description')}}</th>
                     <th>{{__('Дата создания')}}</th>
                 </tr>
-            @foreach($checkData as $check)
-                <tr>
-                    <td>{{$check->id}}</td>
-                    <td>{{$check->status_code}}</td>
-                    <td>{{Str::of($check->h1)->limit(20)}}</td>
-                    <td>{{Str::of($check->keywords)->limit(20)}}</td>
-                    <td>{{Str::of($check->description)->limit(20)}}</td>
-                    <td>{{Str::of($check->created_at)->limit(20)}}</td>
-                </tr>
-            @endforeach
+            </thead>
+            <tbody id="check_results">
+            </tbody>
         </table>
     </div>
 </div>

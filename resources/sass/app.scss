@@ -22,3 +22,13 @@ html, body {
 .content {
     position: relative;
 }
+
+.search {
+    margin-right: 0.3em;
+    align-items: flex-end;
+    max-width: 400px;
+}
+
+.btn-outline-secondary {
+    font-weight: bold;
+}

@@ -6,3 +6,8 @@ Content-Type: application/json
 {
   "name": "Pair.com"
 }
+
+###
+
+GET http://0.0.0.0:8000/api/urls/31
+Accept: application/json

@@ -8,6 +8,7 @@
         <meta name="csrf-param" content="_token" />
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <script src="{{ asset('js/app.js') }}"></script>
+        @stack('scripts')
     </head>
     <body class="min-vh-100 d-flex flex-column">
     <header class="flex-shrink-0">
@@ -32,6 +33,7 @@
         <main class="flex-grow-1">
             @include('flash::message')
             @yield('content')
+            <div id="alert"></div>
         </main>
         <footer class="border-top py-3 mt-5 flex-shrink-0">
             <div class="container-lg">

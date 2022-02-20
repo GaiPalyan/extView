@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Domain\UrlManager;
+use App\Http\Requests\SearchRequest;
 use App\Http\Requests\UrlRequest;
 use App\Models\Url;
 use App\Services\Parser;
 use Exception;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
 class ApiUrlController extends Controller
@@ -20,18 +24,25 @@ class ApiUrlController extends Controller
 
     public function index()
     {
-        return $this->manager->getUrlsList();
+        return $this->manager->getUrlsList()['list']
+                             ->getCollection()
+                             ->toJson();
+    }
+
+    public function search(SearchRequest $request)
+    {
+        return $this->manager->getUrlsList($request->query('field'))['list']->getCollection()->toJson();
     }
 
     public function show(Url $url)
     {
-        $url = $this->manager->getUrlRelatedData($url);
-        return response()->json($url);
+        return response()->json($this->manager->getUrlRelatedData($url));
     }
 
     public function store(UrlRequest $request)
     {
         $url = $request->input('name');
+
 
         try {
             Http::get($url)->throw();
@@ -43,7 +54,7 @@ class ApiUrlController extends Controller
 
         $url = $this->manager->saveUrl($url);
 
-        return response()->json(['url' => $url]);
+        return response()->json(['id' => $url->getAttribute('id'), 'success' => 'Url added']);
     }
 
     public function storeCheck(Url $url)
@@ -59,9 +70,11 @@ class ApiUrlController extends Controller
         $parsedBody = Parser::parseBody($response->body());
         $parsedBody['status_code'] = $response->status();
         $this->manager->saveUrlCheck($url, $parsedBody);
+        $latest = $this->manager->getLustCheck($url);
 
         return response()->json([
-            'success' => 'Url has been checked'
+            'latest' => $latest,
+            'success' => 'Url has been checked',
         ]);
     }
 }

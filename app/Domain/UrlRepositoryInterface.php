@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain;
 
 use App\Models\Url;
+use App\Models\UrlCheck;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 interface UrlRepositoryInterface
@@ -13,4 +14,5 @@ interface UrlRepositoryInterface
     public function getUrlCheckingData(Url $url): LengthAwarePaginator;
     public function save(string $url): Url;
     public function saveCheck(Url $url, array $parsedBody): void;
+    public function getUrlLustCheck(Url $url): UrlCheck;
 }

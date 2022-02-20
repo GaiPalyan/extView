@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Domain\UrlExceptions\FailedUrlSaveException;
 use App\Domain\UrlManager;
-use App\Http\Requests\UrlRequest;
 use App\Models\Url;
 use App\Services\Parser;
 use Illuminate\Http\RedirectResponse;
@@ -25,32 +23,12 @@ class UrlController extends Controller
         $this->manager = $manager;
     }
 
-    public function store(UrlRequest $request): RedirectResponse
-    {
-
-        try {
-            Http::get($request->input('name'))->throw();
-        } catch (\Exception $e) {
-            $message = flash('Некорректный адрес')->error()->important();
-            return back()->withErrors($message->messages);
-        }
-
-        try {
-            $url = $this->manager->saveUrl($request->input('name'));
-            return redirect()->route('url.show', $url);
-        } catch (FailedUrlSaveException $exception) {
-            flash($exception->getMessage())->error()->important();
-            return back();
-        }
-    }
-
     /**
      * Show urls main list
      */
     public function index(): View
     {
-        $list = $this->manager->getUrlsList();
-        return view('urls.index', $list);
+        return view('urls.index');
     }
 
     public function show(Url $url): View
