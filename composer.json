@@ -13,7 +13,8 @@
         "laracasts/flash": "^3.2",
         "laravel/framework": "^8.54",
         "laravel/tinker": "^2.5",
-        "laravelcollective/html": "^6.2"
+        "laravelcollective/html": "^6.2",
+        "symfony/string": "^6.0"
     },
     "require-dev": {
         "roave/security-advisories": "dev-latest"

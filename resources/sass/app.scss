@@ -22,3 +22,40 @@ html, body {
 .content {
     position: relative;
 }
+
+.search {
+    margin-right: 0.3em;
+    align-items: flex-end;
+    max-width: 400px;
+}
+
+.btn-outline-secondary {
+    font-weight: bold;
+}
+
+.action-message {
+    display: flex;
+}
+
+.alert-message {
+    justify-content: flex-start;
+    display: inline-flex;
+    position: relative;
+    height: 3em;
+    width: 33em;
+}
+
+.store {
+    top: 50%;
+    left: 35%;
+}
+
+.check {
+    top: 45%;
+    left: 0;
+    margin-bottom: 0.4em;
+}
+
+.main-title {
+    margin: 0 0 0 0.2em;
+}

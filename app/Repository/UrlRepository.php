@@ -12,12 +12,21 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class UrlRepository implements UrlRepositoryInterface
 {
-    public function getList(): array
+    public function getList($inputText = ''): array
     {
-        $urls = Url::select('id', 'name')->orderByDesc('created_at')->paginate(5);
-        $lastChecks = $this->getUrlsCheckingData();
+        $list = Url::selectRaw(
+            'urls.id,
+                urls.name as name,
+                max(checks.updated_at) as last_check,
+                checks.status_code'
+        )->leftJoin('url_checks as checks', function ($join) {
+            $join->on('urls.id', '=', 'checks.url_id');
+        })->orWhere('name', 'like', "%{$inputText}%")
+          ->groupBy('urls.id', 'status_code')
+          ->orderByDesc('last_check')
+          ->paginate(5);
 
-        return compact('urls', 'lastChecks');
+        return compact('list');
     }
 
     public function getUrlCheckingData(Url $url): LengthAwarePaginator
@@ -30,12 +39,11 @@ class UrlRepository implements UrlRepositoryInterface
      */
     public function save(string $url): Url
     {
-        $url = Url::create(['name' => $url]);
-
-        if (!$url) {
+        try {
+            $url = Url::create(['name' => $url]);
+        } catch (\Exception $e) {
             throw new FailedUrlSaveException('By some reason your address is not saved');
         }
-
         return $url;
     }
 
@@ -46,12 +54,8 @@ class UrlRepository implements UrlRepositoryInterface
         $urlCheck->save();
     }
 
-    public function getUrlsCheckingData(): array
+    public function getUrlLustCheck(Url $url): UrlCheck
     {
-        return UrlCheck::select('url_id', 'status_code')
-                        ->selectRaw('max(updated_at) as last_check')
-                        ->groupBy('url_id', 'status_code')
-                        ->get()->keyBy('url_id')
-                        ->toArray();
+        return UrlCheck::where('url_id', $url->getAttribute('id'))->latest()->first();
     }
 }

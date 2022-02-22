@@ -17,7 +17,6 @@ services:
       - ./docker/logs/nginx:/var/logs/nginx:rw
     depends_on:
       - php
-      - postgres
     networks:
       - webapp
 
@@ -26,11 +25,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: ${APP_NAME}_php
-    ports:
-      - "9001:9000"
-      - "8001:8000"
     volumes:
-      - ./:/var/www/html/
+        - ./:/var/www/html
     links:
       - postgres
     depends_on:
@@ -43,8 +39,6 @@ services:
     container_name: ${APP_NAME}_postgres
     restart: unless-stopped
     tty: true
-    ports:
-      - "5433:5432"
     volumes:
       - ./docker/postgres:/var/lib/postrgesql/data
     environment:
@@ -52,3 +46,5 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DATABASE: ${DB_DATABASE}
       POSTRGRES_HOST_AUTH_METHOD: "trust"
+    networks:
+        - webapp

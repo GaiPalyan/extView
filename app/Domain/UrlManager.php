@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Domain;
 
 use App\Models\Url;
+use App\Models\UrlCheck;
 
 class UrlManager
 {
@@ -15,15 +16,15 @@ class UrlManager
         $this->repository = $repository;
     }
 
-    public function getUrlsList(): array
+    public function getUrlsList(string $searchBy = ''): array
     {
-        return $this->repository->getList();
+        return $this->repository->getList($searchBy);
     }
 
     public function getUrlRelatedData(Url $url): array
     {
-        $checkData = $this->repository->getUrlCheckingData($url);
-        return compact('url', 'checkData');
+        $checkList = $this->repository->getUrlCheckingData($url);
+        return compact('url', 'checkList');
     }
 
     public function saveUrl(string $url): Url
@@ -34,5 +35,10 @@ class UrlManager
     public function saveUrlCheck(Url $url, array $parsedBody): void
     {
         $this->repository->saveCheck($url, $parsedBody);
+    }
+
+    public function getLustCheck(Url $url): UrlCheck
+    {
+        return $this->repository->getUrlLustCheck($url);
     }
 }

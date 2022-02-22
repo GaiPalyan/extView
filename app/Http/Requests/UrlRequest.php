@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Str;
 
 class UrlRequest extends FormRequest
@@ -28,17 +29,15 @@ class UrlRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|url|max:255|unique:urls'
+            'name' => 'string|url|max:255|unique:urls'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'required' => 'Поле ввода не может быть пустым',
-            'url' => 'Некорректный адрес',
-            'max' => 'Максимальная допустимая длина адреса 255 символов',
-            'unique' => 'Такой адрес уже есть в базе, воспользуйтесь поиском.'
+            'url' => 'Incorrect address',
+            'unique' => 'This address already exist.'
         ];
     }
 
@@ -46,15 +45,28 @@ class UrlRequest extends FormRequest
     {
         $url = $this->input('name');
 
+
         $prepared = !Str::startsWith($url, ['http://', 'https://']) ? implode(['https://', $url]) : $url;
+
+        $parts = parse_url($prepared);
+        if ($parts) {
+            $prepared = self::toLower($parts);
+        }
         $this->merge(['name' => $prepared]);
     }
 
-    protected function failedValidation(Validator $validator): void
+    protected function failedValidation(Validator $validator)
     {
-        if ($validator->fails()) {
-            flash($validator->errors()->first('name'))->error()->important();
-        }
-        parent::failedValidation($validator);
+        throw new HttpResponseException(response()->json(['error' => $validator->errors()->first()], 422));
+    }
+
+    private static function toLower(array $parts): string
+    {
+        $query = array_key_exists('query', $parts)
+            ? "?{$parts['query']}"
+            : '';
+
+        $lowerCaseUrl = strtolower(implode([$parts['scheme'], '://', $parts['host'], $parts['path'] ?? '']));
+        return "{$lowerCaseUrl}{$query}";
     }
 }
