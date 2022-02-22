@@ -1,8 +1,5 @@
 @extends('layouts.app')
 @section('content')
-<script id="entity" src="{{ asset('js/urls/show.js') }}">
-    @json($url)
-</script>
 <div class="container-lg">
         <h1 id="h1_url_name" class="mt-5 mb-3">{{__('Адрес: ')}}</h1>
         <div class="table-responsive">
@@ -26,10 +23,11 @@
 
     <div class="table-responsive">
         <h2 class="mt-5 mb-3">{{__('Проверки')}}</h2>
-        <form id="check" class="mb-2" action="{{ route('api.check_store', $url) }}" method="post">
+        <form id="check" class="mb-2" method="post">
             @csrf
             <input id="check" class="btn btn-primary" type="submit" value="Запустить проверку">
         </form>
+        <div class="action-message" id="alert"></div>
         <table class="table table-bordered table-hover text-nowrap">
             <thead>
                 <tr>
@@ -46,4 +44,5 @@
         </table>
     </div>
 </div>
+<script id="entity" src="{{ asset('js/urls/show.js') }}"></script>
 @endsection

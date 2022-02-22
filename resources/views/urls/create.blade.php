@@ -1,11 +1,10 @@
 @extends('layouts.app')
 @section('content')
-    @include('flash::message')
     <div class="jumbotron jumbotron-fluid bg-dark">
         <div class="container-lg">
             <div class="row">
                 <div class="col-12 col-md-10 col-lg-8 mx-auto text-white" id="test">
-                    <h1 class="display-3">{{__('Анализатор страниц')}}</h1>
+                    <h1 class="display-3 main-title">{{__('Анализатор страниц')}}</h1>
                     <p class="lead">{{__('Бесплатно проверяйте сайты на SEO пригодность')}}</p>
                     <form id="url_store" class="d-flex justify-content-center" action="{{ route('api.store') }}" method="post">
                         @csrf
@@ -20,9 +19,9 @@
                                type="submit"
                                value="Отправить">
                     </form>
-                    <script></script>
                 </div>
             </div>
         </div>
     </div>
+    <div class="action-message" id="alert"></div>
 @endsection

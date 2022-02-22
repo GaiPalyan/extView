@@ -1,4 +1,5 @@
-import {alertSuccess} from "../message";
+require('../apiClient');
+import {alertMessage} from "../message";
 
 export default $(function () {
 
@@ -14,8 +15,11 @@ export default $(function () {
             method:$(this).attr('method'),
             data: JSON.stringify(data),
             success: function (response) {
-                $('#alert').append(alertSuccess(response))
+                alertMessage(response.success, 'success', 'store');
             },
+            error: function (response) {
+                alertMessage(JSON.parse(response.responseText).error, 'danger', 'store');
+            }
         })
     })
 })

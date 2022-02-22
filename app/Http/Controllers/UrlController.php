@@ -13,49 +13,24 @@ use Illuminate\View\View;
 
 class UrlController extends Controller
 {
-    private UrlManager $manager;
-
     /**
-     * @param UrlManager $manager
-     */
-    public function __construct(UrlManager $manager)
-    {
-        $this->manager = $manager;
-    }
-
-    /**
-     * Show urls main list
+     * Show urls index page
      */
     public function index(): View
     {
         return view('urls.index');
     }
 
-    public function show(Url $url): View
+    /**
+     * Show url personal page
+     */
+    public function show(): View
     {
-        $relatedData = $this->manager->getUrlRelatedData($url);
-        return view('urls.show', $relatedData);
-    }
-
-    public function storeCheck(Url $url): RedirectResponse
-    {
-        try {
-            $response = Http::get($url->getAttribute('name'));
-        } catch (\Exception $e) {
-            flash('Некорректный адрес')->error()->important();
-            return back();
-        }
-
-        $parsedBody = Parser::parseBody($response->body());
-        $parsedBody['status_code'] = $response->status();
-        $this->manager->saveUrlCheck($url, $parsedBody);
-        flash('Проверка прошла успешно')->success()->important();
-
-        return back();
+        return view('urls.show');
     }
 
     /**
-     * @return View
+     * Show url create form template
      */
     public function create(): View
     {

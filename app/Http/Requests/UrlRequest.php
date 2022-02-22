@@ -6,6 +6,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Str;
 
 class UrlRequest extends FormRequest
@@ -35,9 +36,8 @@ class UrlRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'url' => 'Incorrect url',
-            'max' => 'Максимальная допустимая длина адреса 255 символов',
-            'unique' => 'Такой адрес уже есть в базе, воспользуйтесь поиском.'
+            'url' => 'Incorrect address',
+            'unique' => 'This address already exist.'
         ];
     }
 
@@ -57,10 +57,7 @@ class UrlRequest extends FormRequest
 
     protected function failedValidation(Validator $validator)
     {
-        if ($validator->fails()) {
-            flash($validator->errors()->first('name'))->error()->important();
-        }
-        parent::failedValidation($validator);
+        throw new HttpResponseException(response()->json(['error' => $validator->errors()->first()], 422));
     }
 
     private static function toLower(array $parts): string

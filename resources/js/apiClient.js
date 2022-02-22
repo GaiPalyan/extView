@@ -5,3 +5,10 @@ export default $.ajaxSetup({
     contentType:'application/json',
     dataType: "json",
 });
+
+export const apiClient = (endpoint, method) => {
+    return $.ajax({
+        url: endpoint,
+        method: method,
+    });
+}

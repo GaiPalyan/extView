@@ -48,7 +48,7 @@ class ApiUrlController extends Controller
             Http::get($url)->throw();
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Incorrect address'
+                'error' => 'Address is not exist or action violates this site\'s security policy'
             ])->setStatusCode(422);
         }
 
@@ -63,7 +63,7 @@ class ApiUrlController extends Controller
             $response = Http::get($url->getAttribute('name'));
         } catch (Exception $e) {
             return response()->json([
-                'error' => 'Incorrect address'
+                'error' => 'Address is not exist or action violates this site\'s security policy'
             ])->setStatusCode(422);
         }
 

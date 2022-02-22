@@ -6,4 +6,5 @@ namespace App\Domain\UrlExceptions;
 
 class FailedUrlSaveException extends \Exception
 {
+
 }

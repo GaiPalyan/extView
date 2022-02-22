@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use DiDom\Document;
+use function Symfony\Component\String\u;
 
 class Parser
 {
@@ -16,9 +17,9 @@ class Parser
         $description = optional($elements->first('meta[name=description]'))->getAttribute('content');
 
         return [
-            'h1' => $h1,
-            'keywords' => $keywords,
-            'description' => $description
+            'h1' => u($h1)->truncate(255),
+            'keywords' => u($keywords)->truncate(255),
+            'description' => u($description)->truncate(255),
         ];
     }
 }

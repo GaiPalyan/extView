@@ -1,24 +1,18 @@
-require('../ajaxSetup');
+import {apiClient} from "../apiClient";
 require('./createCheck');
 import __ from "lodash";
 
-export const getEntity = () => {
-    return $('#entity').html()
+export const getEntityId = () => {
+    return  __.last(window.location.pathname.split('/')) ;
 };
 
 $(function () {
     $(document).ready(function () {
-        let endpoint = 'http://0.0.0.0:8000/api/urls'
-        $.ajax({
-            type: "GET",
-            url:  [endpoint, JSON.parse(getEntity()).id].join('/'),
-            success: function (response) {
-                createBaseUrlInfoTable(response.url);
-                createCheckInfoTable(response.checkList.data);
-            },
-            error: function (response) {
-                console.log(response)
-            }
+        let route = '/api/urls';
+        let endpoint = [route, getEntityId()].join('/')
+        apiClient(endpoint, 'GET').done(function (response) {
+            createBaseUrlInfoTable(response.url);
+            createCheckInfoTable(response.checkList.data);
         })
     })
 });
@@ -37,9 +31,9 @@ export const createCheckInfoTable = (checkData) => {
             `<tr>
                 <td>${check.id}</td>
                 <td>${check.status_code}</td>
-                <td>${__.truncate(check.h1, {"length": 50}) ?? ''}</td>
-                <td>${__.truncate(check.keywords, {"length": 50}) ?? ''}</td>
-                <td>${__.truncate(check.description, {"length": 50}) ?? ''}</td>
+                <td>${__.truncate(check.h1, {"length": 30}) ?? ''}</td>
+                <td>${__.truncate(check.keywords, {"length": 30}) ?? ''}</td>
+                <td>${__.truncate(check.description, {"length": 30}) ?? ''}</td>
                 <td>${check.created_at}</td>
             </tr>`);
     });

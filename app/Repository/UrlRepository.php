@@ -39,12 +39,11 @@ class UrlRepository implements UrlRepositoryInterface
      */
     public function save(string $url): Url
     {
-        $url = Url::create(['name' => $url]);
-
-        if (!$url) {
+        try {
+            $url = Url::create(['name' => $url]);
+        } catch (\Exception $e) {
             throw new FailedUrlSaveException('By some reason your address is not saved');
         }
-
         return $url;
     }
 

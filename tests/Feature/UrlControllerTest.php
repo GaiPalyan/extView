@@ -13,7 +13,7 @@ class UrlControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $this->url = Url::create(['name' => 'https://www.w.com.']);
+        $this->url = Url::create(['name' => 'https://www.google.com.']);
     }
 
     public function testMain(): void
@@ -22,10 +22,24 @@ class UrlControllerTest extends TestCase
         $response->assertOk();
     }
 
+    /**
+     * @return void
+     * @throws \JsonException
+     */
     public function testIndex(): void
     {
-        $response = $this->get(route('urls.index', $this->url));
+        $url = [
+            'id' => $this->url->id,
+            'name' => $this->url->name,
+            'last_check' => null,
+            'status_code' => null,
+        ];
+
+        $expected = json_encode($url, JSON_THROW_ON_ERROR);
+        $response = $this->get(route('api.index'));
         $response->assertOk();
+        $response->assertSessionHasNoErrors();
+        $this->assertEquals("[{$expected}]", $response->content());
     }
 
     /**
@@ -35,39 +49,38 @@ class UrlControllerTest extends TestCase
     {
         $url = ['name' => $urlName];
         Http::fake([$url['name'] => Http::response([], 200)]);
-        $response = $this->post(route('urls.store'), $url);
+        $response = $this->post(route('api.store'), $url);
 
+        $response->assertJson(['success' => 'Url added']);
         $response->assertSessionHasNoErrors();
-        $response->assertRedirect();
         $this->assertDatabaseHas('urls', $url);
     }
 
     /**
      * @dataProvider shortNameUrlsProvider
      */
-    public function shortNameUrlsStore(string $urlName): void
+    public function testShortNameUrlsStore(string $urlName): void
     {
         $url = ['name' => $urlName];
         Http::fake([$url['name'] => Http::response([], 200)]);
 
-        $response = $this->post(route('urls.store'), $url);
+        $response = $this->post(route('api.store'), $url);
         $response->assertSessionHasNoErrors();
-        $response->assertRedirect();
+        $response->assertJson(['success' => 'Url added']);
         $this->assertDatabaseHas('urls', ['name' => "https://{$url['name']}"]);
     }
 
     public function testStoreExistingDomain(): void
     {
-        $url = ['name' => 'https://www.w.com.'];
+        $url = ['name' => 'https://www.google.com.'];
 
-        $response = $this->post(route('urls.store'), $url);
-        $response->assertSessionHasErrors();
-        $response->assertRedirect(route('urls.create'));
+        $response = $this->post(route('api.store'), $url);
+        $response->assertJson(['error' => "This address already exist."]);
+        $response->assertStatus(422);
         $this->assertDatabaseHas('urls', $url);
     }
 
     /**
-     * @param string $incorrectDomainNames
      * @dataProvider incorrectDomainNamesProvider
      */
     public function testStoreIncorrectDomainNames(string $incorrectDomainNames): void
@@ -75,11 +88,10 @@ class UrlControllerTest extends TestCase
         $url = ['name' => $incorrectDomainNames];
 
 
-        Http::fake([$url['name'] => Http::response([], 500)]);
-
-        $response = $this->post(route('urls.store'), $url);
-        $response->assertSessionHasErrors();
-        $response->assertRedirect(route('urls.create'));
+        Http::fake([$url['name'] => Http::response([], 422)]);
+        $response = $this->post(route('api.store'), $url);
+        $response->assertJson(['error' => 'Address is not exist or action violates this site\'s security policy']);
+        $response->assertStatus(422);
         $this->assertDatabaseMissing('urls', $url);
     }
 
@@ -89,7 +101,7 @@ class UrlControllerTest extends TestCase
                  <meta name="keywords" content="awesome content"> \n
                  <meta name="description" content="most popular app">';
         Http::fake([$this->url->name => Http::response($body, 200)]);
-        $response = $this->post(route('url_checks.store', $this->url->id));
+        $response = $this->post(route('api.check_store', $this->url->id));
 
         $data = [
             'url_id' => $this->url->id,
@@ -100,7 +112,8 @@ class UrlControllerTest extends TestCase
         ];
         $this->assertDatabaseHas('url_checks', $data);
         $response->assertSessionHasNoErrors();
-        $response->assertRedirect();
+        $response->assertStatus(200);
+        $response->assertJson(['latest' => $data, 'success' => 'Url has been checked']);
     }
 
     public function fullNameUrlsProvider(): array
@@ -108,7 +121,7 @@ class UrlControllerTest extends TestCase
         return [
             ['https://www.ya.ru'],
             ['https://www.google.com'],
-            ['https://www.php.net']
+            ['https://www.php.net'],
         ];
     }
 
@@ -126,7 +139,6 @@ class UrlControllerTest extends TestCase
         return [
             ['googleru'],
             ['htt://ya.ru'],
-            ['//wwww.youtube.com'],
             ['you//tube.com']
         ];
     }

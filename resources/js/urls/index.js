@@ -1,12 +1,9 @@
-require('../ajaxSetup');
+import {apiClient} from "../apiClient";
 require('./search');
 
 export default $(function () {
     $(document).ready(function () {
-        $.ajax({
-            type: "GET",
-            url: 'api/urls',
-        }).done(function (data) {
+        apiClient('/api/urls', 'GET').done(function (data) {
             data.forEach(item => $('table').append(createTable(item)));
         })
     })

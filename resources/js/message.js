@@ -1,11 +1,14 @@
-export const alertSuccess = (response) => {
-    return `<div class="alert alert-success" role="alert">
-             <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
-                ${response.success}
+export const alertMessage = (message, type, action) => {
+    return $('#alert').html(`
+          <div class="alert-message ${action}">
+            <div class="alert alert-${type}" role="alert">
+                ${message}
                 <button type="button"
                         class="close"
                         data-dismiss="alert"
                         aria-hidden="true"
                 >&times;</button>
-            </div>`
+            </div>
+          </div>`
+    )
 }

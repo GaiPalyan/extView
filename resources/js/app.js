@@ -1,4 +1,4 @@
 require('./bootstrap');
-require('./ajaxSetup');
+require('./apiClient');
 require('./urls/create');
 require('./message');
