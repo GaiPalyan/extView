@@ -6,8 +6,8 @@
         <title><?php echo $__env->yieldContent('title', 'Main page'); ?></title>
         <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
         <meta name="csrf-param" content="_token" />
-        <link href="/css/app.css" rel="stylesheet">
-        <script src="/js/app.js"></script>
+        <link href="<?php echo e(mix('css/app.css')); ?>" rel="stylesheet">
+        <script src="<?php echo e(mix('js/app.js')); ?>"></script>
     </head>
     <body class="min-vh-100 d-flex flex-column">
     <header class="flex-shrink-0">

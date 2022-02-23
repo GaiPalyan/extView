@@ -44,5 +44,5 @@
         </table>
     </div>
 </div>
-<script id="entity" src="{{ secure_asset('js/urls/show.js') }}"></script>
+<script id="entity" src="{{ mix('js/urls/show.js') }}"></script>
 @endsection
