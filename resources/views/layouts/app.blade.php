@@ -6,8 +6,8 @@
         <title>@yield('title', 'Main page')</title>
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <meta name="csrf-param" content="_token" />
-        <link href="/css/app.css" rel="stylesheet">
-        <script src="/js/app.js"></script>
+        <link href="{{secure_asset('css/app.css')}}" rel="stylesheet">
+        <script src="{{ secure_asset('js/app.js') }}"></script>
     </head>
     <body class="min-vh-100 d-flex flex-column">
     <header class="flex-shrink-0">
