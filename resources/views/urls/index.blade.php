@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-<script src="{{ asset('js/urls/index.js') }}"></script>
+<script src="/js/urls/index.js"></script>
 <div class="container-lg">
     <h1 class="mt-5 mb-3">Сайты</h1>
         <div class="table-responsive">
