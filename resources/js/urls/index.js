@@ -2,8 +2,13 @@ import {apiClient} from "../apiClient";
 require('./search');
 
 export default $(function () {
+    const apiClientParam = {
+        "endpoint": '/api/urls',
+        "method": 'GET',
+    };
+
     $(document).ready(function () {
-        apiClient('/api/urls', 'GET').done(function (data) {
+        apiClient(apiClientParam).done(function (data) {
             data.forEach(item => $('table').append(createTable(item)));
         })
     })

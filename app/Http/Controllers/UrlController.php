@@ -13,6 +13,11 @@ use Illuminate\View\View;
 
 class UrlController extends Controller
 {
+    public function __construct(UrlManager $manager)
+    {
+        $this->manager = $manager;
+    }
+
     /**
      * Show urls index page
      */

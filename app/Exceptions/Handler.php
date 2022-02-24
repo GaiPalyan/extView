@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -41,6 +42,8 @@ class Handler extends ExceptionHandler
         });
     }
 
+
+
     public function render($request, Throwable $e)
     {
         if (($e instanceof ModelNotFoundException) && Str::startsWith($request->route()->uri, 'api')) {
@@ -48,7 +51,6 @@ class Handler extends ExceptionHandler
                 'message' => 'Resource not found',
             ], 404);
         }
-
         return parent::render($request, $e);
     }
 }

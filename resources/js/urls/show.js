@@ -8,9 +8,11 @@ export const getEntityId = () => {
 
 $(function () {
     $(document).ready(function () {
-        let route = '/api/urls';
-        let endpoint = [route, getEntityId()].join('/')
-        apiClient(endpoint, 'GET').done(function (response) {
+        let apiClientParam = {
+            "endpoint": ['/api/urls', getEntityId()].join('/'),
+            "method": 'GET',
+        };
+        apiClient(apiClientParam).done(function (response) {
             createBaseUrlInfoTable(response.url);
             createCheckInfoTable(response.checkList.data);
         })

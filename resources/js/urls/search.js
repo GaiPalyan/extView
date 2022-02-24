@@ -6,7 +6,13 @@ export default $(function () {
         event.preventDefault();
         const searchInput = $("#search_param").val();
         const endpoint = [$(this).attr('action'),`?field=${searchInput}`].join('');
-        apiClient(endpoint, $(this).attr('method')).done(function (data) {
+
+        let apiClientParam = {
+            "endpoint": endpoint,
+            "method": 'GET',
+        };
+
+        apiClient(apiClientParam).done(function (data) {
 
             let resultHTML = '';
             for (const [key, value] of Object.entries(data)) {
