@@ -1,25 +1,20 @@
-require('../apiClient');
-import {alertMessage} from "../message";
+import {apiClient} from "../apiClient";
 
 export default $(function () {
 
     $('#url_store').on('submit', function (event) {
         event.preventDefault();
-        let name = $("#my_url").val();
         let data = {
-            "name": name
+            "name": $("#my_url").val(),
         };
 
-        $.ajax({
-            url:$(this).attr('action'),
-            method:$(this).attr('method'),
-            data: JSON.stringify(data),
-            success: function (response) {
-                alertMessage(response.success, 'success', 'store');
-            },
-            error: function (response) {
-                alertMessage(JSON.parse(response.responseText).error, 'danger', 'store');
-            }
-        })
+        let apiClientParam = {
+            "endpoint": $(this).attr('action'),
+            "method": $(this).attr('method'),
+            "data": JSON.stringify(data),
+            "action": 'store',
+        };
+
+        apiClient(apiClientParam);
     })
 })

@@ -1,15 +1,18 @@
 import {apiClient} from "../apiClient";
 import __ from "lodash";
-import {alertMessage} from "../message";
 import {getEntityId} from "./show";
 
 export default $(function () {
     $('#check').on('submit', function (event) {
         event.preventDefault();
-        let route = '/api/urls';
-        let endpoint = [route, getEntityId(), 'check'].join('/')
-        apiClient(endpoint, $(this).attr('method')).done(function (response) {
-            alertMessage(response.success, 'success', 'check');
+
+        let apiClientParam = {
+            "endpoint": ['/api/urls', getEntityId(), 'check'].join('/'),
+            "method": $(this).attr('method'),
+            "action": 'check',
+        };
+
+        apiClient(apiClientParam).done(function (response) {
             createCheckInfoRow(response.latest);
         });
     });

@@ -19,12 +19,10 @@ class UrlRepository implements UrlRepositoryInterface
                 urls.name as name,
                 max(checks.updated_at) as last_check,
                 checks.status_code'
-        )->leftJoin('url_checks as checks', function ($join) {
-            $join->on('urls.id', '=', 'checks.url_id');
-        })->orWhere('name', 'like', "%{$inputText}%")
+        )->leftJoin('url_checks as checks', 'urls.id', '=', 'checks.url_id')
+          ->where('name', 'like', "%{$inputText}%")
           ->groupBy('urls.id', 'status_code')
-          ->orderByDesc('last_check')
-          ->paginate(5);
+          ->orderByDesc('last_check')->paginate(10);
 
         return compact('list');
     }
